@@ -1,91 +1,77 @@
+# 📚 BYU ECE Writing Tracker
 
-# BYU ECE Writing Tracker
+A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to **gamify writing** and monitor lab members' writing activity. Who's writing the most? Now you'll know.
 
-Habit tracking software, commissioned by Cammy and James from the MAGICC Lab in an effort to gamify writing and to keep track of who in the lab has been writing the most.
+---
 
+## 🛠 Tech Stack
 
-## Tech Stack
+- **Frontend:** Vue 3, PrimeVue 4, TailwindCSS  
+- **Backend:** Node.js, Express  
+- **Package Manager:** PNPM
 
-**Frontend:** Vue 3, PrimeVue 4, TailwindCSS
+---
 
-**Backend:** Node, Express, PNPM
+## 🚀 Getting Started (Local Development)
 
-
-## Run Locally
-
-Clone the project
-
-```bash
-  git clone https://github.com/BYU-ECE-Software/Writing-Tracker
-```
-
-Open 2 terminals
-
-Go to the frontend directory on one terminal
+### 1. Clone the Repository
 
 ```bash
-  cd Writing-Tracker/frontend
-```
+git clone https://github.com/BYU-ECE-Software/Writing-Tracker
+cd Writing-Tracker
 
-Install dependencies
+2. Start the Frontend
 
-```bash
-  (p)npm install
-```
+Open a terminal and run:
 
-Start the frontend
+cd frontend
+pnpm install
+pnpm run dev
 
-```bash
-  (p)npm run dev
-```
+3. Start the Backend
 
-On the other terminal, go to the backend directory
+Open a second terminal and run:
 
-```bash
-  cd Writing-Tracker/backend
-```
+cd backend
+pnpm install
+node server.js
 
-Install dependencies
+You should now be able to navigate to the provided frontend URL (typically http://localhost:5173) to use the app.
+🗺 Roadmap
 
-```bash
-  (p)npm install
-```
+    ✅ MVP to display tracked writing sessions
 
-Start the backend
+    🛠 Add badge system for user profiles
 
-```bash
-  node server.js
-```
+    🔒 Improve authentication & session tracking
 
-You now should be able to browse to the given frontend URL and port to see the web app
-## Roadmap
+    📊 Include analytics dashboard
 
-- Actually make this work
+👥 Authors
 
-- Include badges for student's profiles
+    @romanvish
 
+🤝 Contributing
 
-## Authors
+Contributions are welcome! To contribute:
 
-- [@romanvish](https://www.github.com/romanvish)
+    Fork the repository
 
+    Create a new branch (git checkout -b feature/some-feature)
 
-## Contributing
+    Commit your changes (git commit -m 'Add some feature')
 
-Contributions are always welcome!
+    Push to the branch (git push origin feature/some-feature)
 
-Please fork and create a pull request if there are things that others can benefit from.
+    Open a pull request
 
-Please always follow BYU branding guides.
+Please follow BYU branding guidelines when applicable.
+❓ FAQ
 
+Does this work yet?
 
-## FAQ
+    Not yet.
 
-#### Does this work?
+Will it work soon?
 
-No not yet
-
-#### Will it work soon?
-
-I hope so
-
+    We're optimistic. Stay tuned!
