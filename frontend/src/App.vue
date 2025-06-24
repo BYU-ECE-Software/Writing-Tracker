@@ -1,6 +1,7 @@
 <template>
     <HeaderBar/>
     <div class="min-h-screen bg-gray-100">
+
       <Menubar :model="menuItems" class="bg-white shadow">
         <template #end>
           <Button v-if="isAuthenticated" label="Logout" @click="logout" />

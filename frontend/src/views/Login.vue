@@ -91,7 +91,7 @@ const login = async () => {
       life: 4000,
     });
   } finally {
-    loading.value = false;
+    loading.value = true;
   }
 };
 </script>
