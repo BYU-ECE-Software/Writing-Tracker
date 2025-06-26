@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col p-3 w-2xl mx-6 items-center justify-center bg-white shadow-md rounded-lg gap-2">
-    <h1 class="text-3xl font-bold text-center mb-10 p-3 text-indigo-800">🏆 Writing Leaderboard</h1>
+    <h1 class="text-3xl font-bold text-center mb-10 p-3 text-[#002e5d]">🏆 Writing Leaderboard</h1>
 
     <!-- Podium Top 3 -->
     <div class="flex justify-center items-end p-3 gap-4 mb-10 mx-20">
