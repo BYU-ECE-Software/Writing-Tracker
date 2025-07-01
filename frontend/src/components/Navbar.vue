@@ -42,7 +42,7 @@
       <!-- Nav Links Section -->
       <div class="items-center justify-between hidden md:flex md:order-1" id="navbar-search">
         <!-- Search Input (Mobile Only) -->
-        <div class="relative mt-3 md:hidden">
+        <div class="relative mt-3 md:hidden flex flex-row justify-between items-center">
           <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
             <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
               viewBox="0 0 20 20">
@@ -59,11 +59,14 @@
         <ul
           class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:justify-between md:items-center md:gap-8 md:bg-white">
           <li v-for="(item, index) in filteredMenuItems" :key="index">
-            <a :href="item.to"
-              class="block py-2 px-3 text-gray-900 rounded-sm hover:bg-gray-100   md:p-2"
-              :class="{ 'text-white bg-[#0047ba] md:text-[#0047ba] md:bg-transparent': item.to === router.currentRoute.value.path }">
+            <a :href="item.to" class="block py-2 px-3 rounded-sm md:p-2 transition-colors duration-200" :class="[
+              item.to === router.currentRoute.value.path
+                ? 'text-white bg-[#002e5d] hover:text-[#002e5d] hover:shadow-lg'
+                : 'text-gray-900 hover:bg-[#0047ba] hover:text-[#002e5d] hover:shadow-lg',
+            ]">
               {{ item.label }}
             </a>
+
           </li>
         </ul>
       </div>
