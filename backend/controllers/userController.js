@@ -8,12 +8,13 @@ dotenv.config();
 
 exports.registerUser = async (req, res) => {
   try {
-    const { name, username, email, password } = req.body;
+    const { name,netId, username,lab, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ name, username, email, password: hashedPassword });
-    await user.save();
-    res.status(201).json({ message: "User registered" });
+    const user = new User({ name,netId, username,lab, email, password: hashedPassword });
+    const newUser = await user.save();
+    res.status(201).json({ message: "User registered", newUser });
   } catch (error) {
+    console.error("Registration error:", error); 
     if (error.code === 11000) {
       // Duplicate key error
       return res
@@ -26,12 +27,12 @@ exports.registerUser = async (req, res) => {
 
 exports.updateUserProfile = async (req, res) => {
   try {
-    const { name, username, netID, lab, email, password } = req.body;
+    const {  name, username,lab, email, password} = req.body;
     const userId = req.user._id; // Assuming you have middleware to set req.user
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name, username, email, password, netID, lab },
+      { name, username, email, password, netId, lab },
       { new: true }
     );
 

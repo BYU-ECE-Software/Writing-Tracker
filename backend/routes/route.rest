@@ -1,0 +1,28 @@
+GET http://localhost:5000/api/users
+
+###
+
+POST  http://localhost:5000/api/users
+Content-Type: application/json
+
+{
+      "name": "Test name",
+      "netId": "netBYU",
+      "username": "devUser",
+      "lab": "Doctor Evil Lab",
+      "email": "test@byu.test",
+      "password": "12345678"
+    }
+
+###
+POST  http://localhost:5000/api/users/register
+Content-Type: application/json
+
+{
+    "name": "Test2",
+    "netId": "netBYU2",
+    "username": "devUser2",
+    "lab": "Doctor Evil Lab",
+    "email": "test2@byu.test",
+    "password": "12345678"
+}

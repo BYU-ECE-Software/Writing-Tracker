@@ -18,8 +18,8 @@ app.use(express.json());
 app.use(cors({ origin: allowedOrigins }));
 
 mongoose.connect(process.env.MONGO_URI, {
-  }).then(() => console.log("MongoDB Connected"))
-    .catch(err => console.log(err));
+}).then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
 
 
 const authenticate = async (req, res, next) => {
@@ -33,8 +33,7 @@ const authenticate = async (req, res, next) => {
     res.status(401).json({ error: 'Invalid token' });
   }
 };
-
-
+ 
 app.get('/api/leaderboard', authenticate, async (req, res) => {
   const { period } = req.query;
   const startDate = new Date();
@@ -77,5 +76,6 @@ const IP = process.env.IP;
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/logs", logRoutes);
+
 
 app.listen(PORT, IP, () => console.log(`Server running on port ${PORT}`));

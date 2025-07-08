@@ -7,3 +7,4 @@ backend/.env
 backend/.env.local
 backend/.env.prod
 frontend/.env.prod
+backend/*.rest
