@@ -27,7 +27,7 @@ exports.registerUser = async (req, res) => {
 
 exports.updateUserProfile = async (req, res) => {
   try {
-    const { name, username, lab, email, password } = req.body;
+    const { name, netId, username, lab, email, password } = req.body;
     const userId = req.user._id; // Assuming you have middleware to set req.user
 
     const updatedUser = await User.findByIdAndUpdate(

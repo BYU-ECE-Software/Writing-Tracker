@@ -2,17 +2,6 @@ GET http://localhost:5000/api/users
 
 ###
 
-# POST  http://localhost:5000/api/users
-# Content-Type: application/json
-
-# {
-#       "name": "Test name",
-#       "netId": "netBYU",
-#       "username": "devUser",
-#       "lab": "Doctor Evil Lab",
-#       "email": "test@byu.test",
-#       "password": "12345678"
-#     }
 
 ###
 POST  http://localhost:5000/api/users/register
@@ -28,23 +17,25 @@ Content-Type: application/json
 }
 
 ###
-PUT http://localhost:5000/api/users/profile
-Content-Type: application/json
-
-{
-    "name": "Test2",
-    "netId": "netBYU2",
-    "username": "dev_User_2",
-    "lab": "Doctor Evil Lab",
-    "email": "test2@byu.test",
-    "password": "12345678"
-}
-
-###
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
     "email": "test2@byu.test",
     "password": "12345678"
+}
+
+###
+
+PUT http://localhost:5000/api/users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODZkNjE3ODk5NzNjYjMzOGU5MGU5ZjUiLCJpYXQiOjE3NTIyNTMxNjMsImV4cCI6MTc1MjI1Njc2M30.U7oqx1-7TkN9wWfohvoKJt3JsmhqY_Qf_brrF_TtRRk
+Content-Type: application/json
+
+{
+  "name": "Test_2",
+  "netId": "netBYU2",
+  "username": "dev_User_2",
+  "lab": "Doctor Evil Lab",
+  "email": "test2@byu.test",
+  "password": "12345678"
 }
