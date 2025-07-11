@@ -1,39 +1,38 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
-const dotenv = require('dotenv');
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const logRoutes = require('./routes/logRoutes');
+const Log = require('./models/Log');
 
-const allowedOrigins = ['http://localhost:3000',];// 'https://your-frontend-domain.com'];
+const allowedOrigins = ['http://localhost:3000'];
 
-dotenv.config();
 const app = express();
-app.use(cors());
-app.use(express.json());
 app.use(cors({ origin: allowedOrigins }));
+app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI, {
-}).then(() => console.log("MongoDB Connected"))
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
-
 
 const authenticate = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
   try {
-    const decoded = jwt.verify(token, 'secret');
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.userId;
     next();
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' });
   }
 };
- 
+
 app.get('/api/leaderboard', authenticate, async (req, res) => {
   const { period } = req.query;
   const startDate = new Date();
@@ -70,12 +69,11 @@ app.get('/api/leaderboard', authenticate, async (req, res) => {
   res.json(leaderboard);
 });
 
-const PORT = process.env.PORT;
-const IP = process.env.IP;
-
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/logs", logRoutes);
 
+const PORT = process.env.PORT || 5000;
+const IP = process.env.IP || 'localhost';
 
-app.listen(PORT, IP, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, IP, () => console.log(`Server running on ${IP}:${PORT}`));
