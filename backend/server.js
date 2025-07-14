@@ -26,12 +26,13 @@ const authenticate = async (req, res, next) => {
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.userId;
+    req.user = { _id: decoded.userId }; 
     next();
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' });
   }
 };
+
 
 app.get('/api/leaderboard', authenticate, async (req, res) => {
   const { period } = req.query;

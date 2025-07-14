@@ -46,3 +46,27 @@ exports.updateUserProfile = async (req, res) => {
     res.status(500).json({ error: "Server error during profile update" });
   }
 };
+
+exports.getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const userProfile = await User.findById(userId, {
+      name: 1,
+      netId: 1,
+      username: 1,
+      lab: 1,
+      email: 1,
+      badges: 1, // assuming badges is part of the schema
+    });
+
+    if (!userProfile) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(userProfile);
+  } catch (error) {
+    console.error("Profile fetch error:", error);
+    res.status(500).json({ error: "Server error during profile fetch" });
+  }
+};

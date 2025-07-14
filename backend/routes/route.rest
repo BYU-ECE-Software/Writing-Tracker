@@ -1,34 +1,36 @@
 GET http://localhost:5000/api/users
 
-###
 
 
 ###
+
+#register user API
 POST  http://localhost:5000/api/users/register
 Content-Type: application/json
 
 {
-    "name": "Test2",
-    "netId": "netBYU2",
-    "username": "devUser2",
+    "name": "Test5",
+    "netId": "netBYU5",
+    "username": "devUser5",
     "lab": "Doctor Evil Lab",
-    "email": "test2@byu.test",
+    "email": "test5@byu.test",
     "password": "12345678"
 }
 
 ###
+#user Login API
 POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "test2@byu.test",
-    "password": "12345678"
+    "email": "test5@byu.test",
+  "password": "12345678"
 }
 
 ###
-
+#update user profile API
 PUT http://localhost:5000/api/users/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODZkNjE3ODk5NzNjYjMzOGU5MGU5ZjUiLCJpYXQiOjE3NTIyNTMxNjMsImV4cCI6MTc1MjI1Njc2M30.U7oqx1-7TkN9wWfohvoKJt3JsmhqY_Qf_brrF_TtRRk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MTMyYjliOWVkNDc2YTExYTQ4YTIiLCJpYXQiOjE3NTI1MDMwOTgsImV4cCI6MTc1MjUwNjY5OH0.t-T5DOgbZdXAkbOQXKvpSajJ7cxYsW1VmZbTslx4bYE
 Content-Type: application/json
 
 {
@@ -39,3 +41,10 @@ Content-Type: application/json
   "email": "test2@byu.test",
   "password": "12345678"
 }
+
+
+###
+#get user profiles API
+GET http://localhost:5000/api/users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MTMyYjliOWVkNDc2YTExYTQ4YTIiLCJpYXQiOjE3NTI1MDMwOTgsImV4cCI6MTc1MjUwNjY5OH0.t-T5DOgbZdXAkbOQXKvpSajJ7cxYsW1VmZbTslx4bYE
+Content-Type: application/json
