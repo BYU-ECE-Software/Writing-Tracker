@@ -1,5 +1,6 @@
-GET http://localhost:5000/api/users
-
+GET http://localhost:5000/api/leaderboard
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MTJmOTliOWVkNDc2YTExYTQ4OWUiLCJpYXQiOjE3NTI1MTA3MDIsImV4cCI6MTc1MjUyNTEwMn0.XwGcd3-tmo1RW4UahVA7qEY4hF1jH0wALKXdhmkOSlQ
+Content-Type: application/json
 
 
 ###
@@ -9,13 +10,14 @@ POST  http://localhost:5000/api/users/register
 Content-Type: application/json
 
 {
-    "name": "Test5",
-    "netId": "netBYU5",
-    "username": "devUser5",
-    "lab": "Doctor Evil Lab",
-    "email": "test5@byu.test",
-    "password": "12345678"
+  "name": "Test11",
+  "netId": "netBYU11",
+  "username": "devUser11",
+  "lab": "Doctor Evil Lab",
+  "email": "test11@byu.test",
+  "password": "12345678"
 }
+
 
 ###
 #user Login API
@@ -23,22 +25,23 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "test5@byu.test",
+    "email": "test11@byu.test",
   "password": "12345678"
 }
 
 ###
 #update user profile API
 PUT http://localhost:5000/api/users/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MTMyYjliOWVkNDc2YTExYTQ4YTIiLCJpYXQiOjE3NTI1MDMwOTgsImV4cCI6MTc1MjUwNjY5OH0.t-T5DOgbZdXAkbOQXKvpSajJ7cxYsW1VmZbTslx4bYE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MTJmOTliOWVkNDc2YTExYTQ4OWUiLCJpYXQiOjE3NTI1MTA3MDIsImV4cCI6MTc1MjUyNTEwMn0.XwGcd3-tmo1RW4UahVA7qEY4hF1jH0wALKXdhmkOSlQ
 Content-Type: application/json
 
+
 {
-  "name": "Test_2",
-  "netId": "netBYU2",
-  "username": "dev_User_2",
+  "name": "Test1",
+  "netId": "netBYU",
+  "username": "devUser1",
   "lab": "Doctor Evil Lab",
-  "email": "test2@byu.test",
+  "email": "test1@byu.test",
   "password": "12345678"
 }
 
@@ -46,5 +49,25 @@ Content-Type: application/json
 ###
 #get user profiles API
 GET http://localhost:5000/api/users/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MTMyYjliOWVkNDc2YTExYTQ4YTIiLCJpYXQiOjE3NTI1MDMwOTgsImV4cCI6MTc1MjUwNjY5OH0.t-T5DOgbZdXAkbOQXKvpSajJ7cxYsW1VmZbTslx4bYE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1Mzg2ODQ0ZjI2ODgxMTVmNzVhMzAiLCJpYXQiOjE3NTI1MTMxMzcsImV4cCI6MTc1MjUyNzUzN30.rzIfoh8XV-urHJ6apoNiRttgFo9D0BsGne1eN3JpMwM
+Content-Type: application/json
+
+
+###
+#Log user logs
+POST http://localhost:5000/api/logs/log
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1M2JmN2I2YWViM2QxOTc0NTY3NWYiLCJpYXQiOjE3NTI1MTM3MDQsImV4cCI6MTc1MjUyODEwNH0._S5xa7TYPF1Uf3IG0IxD8vBO6cyGOwu1_t4GwSlszl0
+Content-Type: application/json
+
+{
+  "date": "2025-07-12",
+  "hours": 7.5,
+  "description": "Worked on research World Domination 3."
+}
+
+
+###
+#Delete user profiles API
+DELETE  http://localhost:5000/api/users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1M2JmN2I2YWViM2QxOTc0NTY3NWYiLCJpYXQiOjE3NTI1MTM3MDQsImV4cCI6MTc1MjUyODEwNH0._S5xa7TYPF1Uf3IG0IxD8vBO6cyGOwu1_t4GwSlszl0
 Content-Type: application/json

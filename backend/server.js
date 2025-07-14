@@ -42,30 +42,30 @@ app.get('/api/leaderboard', authenticate, async (req, res) => {
   else startDate.setFullYear(startDate.getFullYear() - 1);
 
   const leaderboard = await Log.aggregate([
-    { $match: { date: { $gte: startDate.toISOString().split('T')[0] } } },
-    {
-      $group: {
-        _id: '$userId',
-        totalHours: { $sum: '$hours' },
-      },
+  { $match: { date: { $gte: startDate } } }, // <-- Fix here
+  {
+    $group: {
+      _id: '$userId',
+      totalHours: { $sum: '$hours' },
     },
-    {
-      $lookup: {
-        from: 'users',
-        localField: '_id',
-        foreignField: '_id',
-        as: 'user',
-      },
+  },
+  {
+    $lookup: {
+      from: 'users',
+      localField: '_id',
+      foreignField: '_id',
+      as: 'user',
     },
-    { $unwind: '$user' },
-    {
-      $project: {
-        username: '$user.username',
-        totalHours: 1,
-      },
+  },
+  { $unwind: '$user' },
+  {
+    $project: {
+      username: '$user.username',
+      totalHours: 1,
     },
-    { $sort: { totalHours: -1 } },
-  ]);
+  },
+  { $sort: { totalHours: -1 } },
+]);
 
   res.json(leaderboard);
 });
