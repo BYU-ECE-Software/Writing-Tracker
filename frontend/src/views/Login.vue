@@ -1,97 +1,102 @@
 <template>
   <div class="flex justify-center items-center min-h-screen bg-gray-100 px-4">
-    <Toast />
-    <Card class="w-full max-w-md shadow-lg rounded-2xl">
-      <template #title>
-        <div class="text-center text-2xl font-semibold text-gray-800">Login</div>
-      </template>
 
-      <template #content>
-        <div class="flex flex-col gap-4">
-          <div>
-            <label class="block mb-1 text-sm font-medium text-gray-700">Email</label>
-            <Inputtext
-              v-model="email"
-              placeholder="Enter your email"
-              class="w-full"
-              :pt="{ root: 'w-full' }"
-            >
-              <template #prepend>
-                <i class="pi pi-envelope text-gray-500"></i>
-              </template>
-            </Inputtext>
-          </div>
+    <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
+      <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">BYU</h1>
+        <h2 class="text-xl font-semibold text-gray-700 mt-2">ECE Writing Tracker</h2>
+        <h3 class="text-lg font-medium text-gray-600 mt-1">Login</h3>
+      </div>
 
-          <div>
-            <label class="block mb-1 text-sm font-medium text-gray-700">Password</label>
-            <Inputtext
-              v-model="password"
-              type="password"
-              placeholder="Enter your password"
-              class="w-full"
-              :pt="{ root: 'w-full' }"
-            >
-              <template #prepend>
-                <i class="pi pi-lock text-gray-500"></i>
-              </template>
-            </Inputtext>
-          </div>
-
-          <Button
-            label="Login"
-            class="w-full mt-2"
-            :loading="loading"
-            @click="login"
+      <form @submit.prevent="handleLogin" class="space-y-6">
+        <div class=" py-2">
+          <input
+            type="text"
+            id="username"
+            v-model="username"
+            placeholder="Net ID"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 text-black rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
-
-          <div class="text-right mt-2">
-            <a href="#" class="text-sm text-blue-500 hover:underline">Forgot Password?</a>
-          </div>
         </div>
-      </template>
-    </Card>
+
+        <div class=" py-2">
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+            placeholder="Password"
+            required
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <button
+          type="submit"
+          :disabled="loading"
+          class="w-full py-3 px-4 bg-[#002e5d] text-white font-semibold rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:opacity-50"
+        >
+          {{ loading ? 'Logging in...' : 'Login' }}
+        </button>
+      </form>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useToast } from 'primevue/usetoast';
-
-import Card from 'primevue/card';
-import Inputtext from 'primevue/inputtext';
-import Button from 'primevue/button';
-import Toast from 'primevue/toast';
-
 import axios from 'axios';
+import { useAuth } from '@/composable/useAuth';
+import { nextTick } from 'vue';
 
-const email = ref('');
+const { login } = useAuth();
+
+const username = ref('');
 const password = ref('');
 const loading = ref(false);
+
 const router = useRouter();
-const toast = useToast();
 
+const handleLogin = async () => {
+  if (!username.value || !password.value) {
+    console.log({
+      severity: 'warn',
+      summary: 'Missing fields',
+      detail: 'Please enter both Net ID and Password.',
+      life: 3000,
+    });
+    return;
+  }
 
-const login = async () => {
   loading.value = true;
+
   try {
     const response = await axios.post(`${import.meta.env.VITE_API_BASE_URI}/auth/login`, {
-      email: email.value,
+      email: username.value, // or "netId" if your API expects that
       password: password.value,
     });
 
-    localStorage.setItem('token', response.data.token);
-    toast.add({ severity: 'success', summary: 'Login Successful', life: 3000 });
-    router.push('/profile');
+   login(response.data.token); // handles localStorage and reactivity
+
+   console.log({
+      severity: 'success',
+      summary: 'Login Successful',
+      detail: 'Redirecting...',
+      life: 3000,
+    });
+    await nextTick();
+    router.push('/leaderboard'); // or '/dashboard'
   } catch (error) {
-    toast.add({
+    console.log(error)
+    console.log({
       severity: 'error',
       summary: 'Login Failed',
-      detail: error.response?.data?.message || 'Please check your credentials.',
+      detail: error.response?.data?.message || 'Invalid Net ID or Password.',
       life: 4000,
     });
   } finally {
-    loading.value = true;
+    loading.value = false;
   }
 };
 </script>
