@@ -56,177 +56,46 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import avatar from '@/assets/avatar.png'; 
-import { useAuth } from '../composable/useAuth'; // Import the function, not individual values
-const { isAuthenticated, logout } = useAuth(); // Destructure inside setup
+import { ref, onMounted, watch } from 'vue';
+import avatar from '@/assets/avatar.png';
+import { useAuth } from '../composable/useAuth';
 
-// For debugging (optional)
-import { watch } from 'vue';
+const { isAuthenticated, logout } = useAuth();
+
+const users = ref([]);
+
+// Fetch leaderboard data from backend
+onMounted(async () => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URI}/leaderboard`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`, // or hardcoded token for testing
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch leaderboard data');
+
+    const data = await response.json();
+
+    // Map backend data to match leaderboard UI expectations
+    users.value = data.map((user, index) => ({
+      id: index + 1,
+      name: user.username,
+      points: user.totalHours,
+      image: avatar,
+    })).sort((a, b) => b.points - a.points); // Sort descending by points
+
+  } catch (err) {
+    console.error('Error fetching leaderboard:', err);
+  }
+});
+
 watch(isAuthenticated, (newVal) => {
   console.log("isAuthenticated changed:", newVal);
 });
-
-
-const users = ref([
-  {
-    id: 1,
-    name: 'Alice',
-    points: 120,
-    image: avatar,
-  },
-  {
-    id: 2,
-    name: 'Bob',
-    points: 110,
-    image: avatar,
-  },
-  {
-    id: 3,
-    name: 'Charlie',
-    points: 100,
-    image: avatar,
-  },
-  {
-    id: 4,
-    name: 'Diana',
-    points: 85,
-    image: avatar,
-  },
-  {
-    id: 5,
-    name: 'Ethan',
-    points: 75,
-    image: avatar,
-  },
-  {
-    id: 6,
-    name: 'Fiona',
-    points: 60,
-    image: avatar,
-  },
-  {
-    id: 7,
-    name: 'George',
-    points: 50,
-    image: avatar,
-  },
-  {
-    id: 8,
-    name: 'Hannah',
-    points: 45,
-    image: avatar,
-  },
-  {
-    id: 9,
-    name: 'Ian',
-    points: 30,
-    image: avatar,
-  },
-  {
-    id: 10,
-    name: 'Julia',
-    points: 20,
-    image: avatar,
-  },
-  {
-    id: 11,
-    name: 'Kevin',
-    points: 15,
-    image: avatar,
-  },
-  {
-    id: 12,
-    name: 'Laura',
-    points: 10,
-    image: avatar,
-  },
-  {
-    id: 13,
-    name: 'Mike',
-    points: 5,
-    image: avatar,
-  },
-  {
-    id: 14,
-    name: 'Nina',
-    points: 3,
-    image: avatar,
-  },
-  {
-    id: 15,
-    name: 'Oscar',
-    points: 1,
-    image: avatar,
-  },
-  {
-    id: 16,
-    name: 'Paula',
-    points: 0,
-    image: avatar,
-  },
-  {
-    id: 17,
-    name: 'Quentin',
-    points: 0,
-    image: avatar,
-  },
-  {
-    id: 18,
-    name: 'Rachel',
-    points: 0,
-    image: avatar,
-  },
-  {
-    id: 19,
-    name: 'Sam',
-    points: 0,
-    image: avatar,
-  },
-  {
-    id: 20,
-    name: 'Tina',
-    points: 0,
-    image: avatar,
-  },
-  {
-    id: 21,
-    name: 'Ursula',
-    points: 0,
-    image: avatar,
-  },
-  {
-    id: 22,
-    name: 'Victor',
-    points: 0,
-    image: avatar,
-  },
-  {
-    id: 23,
-    name: 'Wendy',
-    points: 0,
-    image: avatar,
-  },
-  {
-    id: 24,
-    name: 'Xander',
-    points: 0,
-    image: avatar,
-  },
-  {
-    id: 25,
-    name: 'Yara',
-    points: 0,
-    image: avatar,
-  },
-  {
-    id: 26,
-    name: 'Zane',
-    points: 0,
-    image: avatar,
-  },
-]);
 </script>
+
 
 <style scoped>
 table {

@@ -25,7 +25,7 @@ router.beforeEach((to, from, next) => {
     next('/login');
   } else if ((to.path === '/login' || to.path === '/register') && token) {
     // prevent going back to login/register if already logged in
-    next('/leaderboard');
+    next('/login');
   } else {
     next();
   }
