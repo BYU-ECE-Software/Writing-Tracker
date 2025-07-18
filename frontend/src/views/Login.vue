@@ -47,7 +47,14 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import { useAuth } from '@/composable/useAuth';
+import { useAuth } from '../composable/useAuth'; // Import the function, not individual values
+const { isAuthenticated, logout } = useAuth(); // Destructure inside setup
+
+// For debugging (optional)
+import { watch } from 'vue';
+watch(isAuthenticated, (newVal) => {
+  console.log("isAuthenticated changed:", newVal);
+});
 import { nextTick } from 'vue';
 
 const { login } = useAuth();

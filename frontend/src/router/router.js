@@ -5,7 +5,7 @@ import Register from '@/views/Register.vue';
 import Profile from '@/views/Profile.vue';
 
 const routes = [
-  { path: '/', redirect: '/login' }, // homepage becomes leaderboard
+  { path: '/', redirect: '/login' }, 
   { path: '/login', component: Login },
   { path: '/register', component: Register },
   { path: '/leaderboard', component: Leaderboard, meta: { requiresAuth: true } },

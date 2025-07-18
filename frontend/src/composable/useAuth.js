@@ -1,4 +1,4 @@
-// composables/useAuth.js
+// useAuth.js
 import { ref, computed } from 'vue';
 
 const token = ref(localStorage.getItem('token') || '');

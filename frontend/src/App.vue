@@ -3,7 +3,7 @@
   <div class="min-h-screen bg-gray-100">
     <!-- Only show navbar if authenticated -->
     <Navbar
-      v-if="isAuthenticated.value"
+     v-if="isAuthenticated.value"
       :menuItems="menuItems"
       @logout="logout"
     />
@@ -15,14 +15,12 @@
 
 
 <script setup>
-import { useRouter } from 'vue-router';
-import { useAuth } from './composable/useAuth'; // adjust path as needed
+import { useAuth } from '@/composable/useAuth';
 import Navbar from './components/Navbar.vue';
 import FooterBar from './components/FooterBar.vue';
 import HeaderBar from './components/HeaderBar.vue';
 
-const router = useRouter();
-const { isAuthenticated, logout } = useAuth();
+const { isAuthenticated, logout } = useAuth(); // Destructure inside setup
 
 const menuItems = [
   { label: 'Leaderboard', to: '/leaderboard', visible: () => isAuthenticated.value },
@@ -31,6 +29,7 @@ const menuItems = [
   { label: 'Register', to: '/register', visible: () => !isAuthenticated.value },
 ];
 </script>
+
 
 
 <style scoped>

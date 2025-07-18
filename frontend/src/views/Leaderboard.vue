@@ -58,6 +58,15 @@
 <script setup>
 import { ref } from 'vue';
 import avatar from '@/assets/avatar.png'; 
+import { useAuth } from '../composable/useAuth'; // Import the function, not individual values
+const { isAuthenticated, logout } = useAuth(); // Destructure inside setup
+
+// For debugging (optional)
+import { watch } from 'vue';
+watch(isAuthenticated, (newVal) => {
+  console.log("isAuthenticated changed:", newVal);
+});
+
 
 const users = ref([
   {

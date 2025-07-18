@@ -59,14 +59,16 @@
         <ul
           class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:justify-between md:items-center md:gap-8 md:bg-white">
           <li v-for="(item, index) in filteredMenuItems" :key="index">
-            <a :href="item.to" class="block py-2 px-3 rounded-sm md:p-2 transition-colors duration-200" :class="[
-              item.to === router.currentRoute.value.path
-                ? 'text-white bg-[#002e5d] hover:text-[#002e5d] hover:shadow-lg'
-                : 'text-gray-900 hover:bg-[#0047ba] hover:text-[#002e5d] hover:shadow-lg',
-            ]">
+            <router-link 
+              :to="item.to" 
+              class="block py-2 px-3 rounded-sm md:p-2 transition-colors duration-200"
+              :class="{
+                'text-white bg-[#002e5d]': isActive(item.to),
+                'text-gray-900 hover:bg-[#0047ba] hover:text-[#002e5d] hover:shadow-lg': !isActive(item.to)
+              }"
+            >
               {{ item.label }}
-            </a>
-
+            </router-link>
           </li>
         </ul>
       </div>
@@ -74,27 +76,27 @@
   </nav>
 </template>
 
-
 <script setup>
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuth } from '@/composable/useAuth'; // Use centralized auth state
 
 const router = useRouter();
-const isAuthenticated = computed(() => !!localStorage.getItem('token'));
+const { isAuthenticated, logout } = useAuth(); // ✅ Reactive auth state
 
 const menuItems = [
-  { label: 'Leaderboard', to: '/' },
+  { label: 'Leaderboard', to: '/leaderboard' },
   { label: 'Profile', to: '/profile', visible: () => isAuthenticated.value },
   { label: 'Login', to: '/login', visible: () => !isAuthenticated.value },
   { label: 'Register', to: '/register', visible: () => !isAuthenticated.value },
+];
 
-]
 const filteredMenuItems = computed(() =>
   menuItems.filter(item => (typeof item.visible === 'function' ? item.visible() : true))
 );
 
-const logout = () => {
-  localStorage.removeItem('token');
-  router.push('/login');
+const isActive = (to) => {
+  return router.currentRoute.value.path === to || 
+         (to === '/leaderboard' && router.currentRoute.value.path === '/');
 };
 </script>

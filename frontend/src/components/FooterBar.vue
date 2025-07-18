@@ -48,6 +48,15 @@
 
 <script setup>
 import "primeicons/primeicons.css";
+import { useAuth } from '../composable/useAuth'; // Import the function, not individual values
+const { isAuthenticated, logout } = useAuth(); // Destructure inside setup
+
+// For debugging (optional)
+import { watch } from 'vue';
+watch(isAuthenticated, (newVal) => {
+  console.log("isAuthenticated changed:", newVal);
+});
+
 </script>
 
 <style scoped>

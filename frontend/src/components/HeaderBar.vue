@@ -1,3 +1,4 @@
+
 <template>
     <header class="header-bar w-full text-white py-4 px-6 shadow-md">
         <div class="max-w-7xl mx-auto flex items-center">
@@ -10,6 +11,14 @@
 </template>
 
 <script>
+import { useAuth } from '../composable/useAuth'; // Import the function, not individual values
+const { isAuthenticated, logout } = useAuth(); // Destructure inside setup
+
+// For debugging (optional)
+import { watch } from 'vue';
+watch(isAuthenticated, (newVal) => {
+  console.log("isAuthenticated changed:", newVal);
+});
 export default {
     name: "HeaderBar",
 };
