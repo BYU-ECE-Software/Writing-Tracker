@@ -25,7 +25,7 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "test5@byu.test",
+    "email": "test3@byu.test",
   "password": "12345678"
 }
 
@@ -49,14 +49,14 @@ Content-Type: application/json
 ###
 #get user profiles API
 GET http://localhost:5000/api/users/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1Mzg2ODQ0ZjI2ODgxMTVmNzVhMzAiLCJpYXQiOjE3NTI1MTMxMzcsImV4cCI6MTc1MjUyNzUzN30.rzIfoh8XV-urHJ6apoNiRttgFo9D0BsGne1eN3JpMwM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlhZDA1MWNlYzU4NWVkNGU5MjEiLCJpYXQiOjE3NTMyMjI4ODMsImV4cCI6MTc1MzIyNjQ4M30.xHBDPuRop4iFmDEponxD0MvEkRCUU081m2o1iKcZI98
 Content-Type: application/json
 
 
 ###
 #Log user logs
 POST http://localhost:5000/api/logs/log
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1M2JmN2I2YWViM2QxOTc0NTY3NWYiLCJpYXQiOjE3NTI1MTM3MDQsImV4cCI6MTc1MjUyODEwNH0._S5xa7TYPF1Uf3IG0IxD8vBO6cyGOwu1_t4GwSlszl0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlhZDA1MWNlYzU4NWVkNGU5MjEiLCJpYXQiOjE3NTMyMjI4ODMsImV4cCI6MTc1MzIyNjQ4M30.xHBDPuRop4iFmDEponxD0MvEkRCUU081m2o1iKcZI98
 Content-Type: application/json
 
 {
