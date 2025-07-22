@@ -1,105 +1,89 @@
 <template>
   <div class="flex justify-center items-center min-h-screen bg-gray-100 px-4">
+    <Card class="w-full max-w-md shadow-lg rounded-2xl">
+      <template #title>
+        <div class="text-center text-2xl font-semibold text-gray-800">Login</div>
+      </template>
 
-    <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
-      <div class="text-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">BYU</h1>
-        <h2 class="text-xl font-semibold text-gray-700 mt-2">ECE Writing Tracker</h2>
-        <h3 class="text-lg font-medium text-gray-600 mt-1">Login</h3>
-      </div>
+      <template #content>
+        <div class="flex flex-col gap-4">
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Email</label>
+            <Inputtext
+              v-model="email"
+              placeholder="Enter your email"
+              class="w-full"
+              :pt="{ root: 'w-full' }"
+            >
+              <template #prepend>
+                <i class="pi pi-envelope text-gray-500"></i>
+              </template>
+            </Inputtext>
+          </div>
 
-      <form @submit.prevent="handleLogin" class="space-y-6">
-        <div class=" py-2">
-          <input
-            type="text"
-            id="username"
-            v-model="username"
-            placeholder="Net ID"
-            required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 text-black rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          <div>
+            <label class="block mb-1 text-sm font-medium text-gray-700">Password</label>
+            <Inputtext
+              v-model="password"
+              type="password"
+              placeholder="Enter your password"
+              class="w-full"
+              :pt="{ root: 'w-full' }"
+            >
+              <template #prepend>
+                <i class="pi pi-lock text-gray-500"></i>
+              </template>
+            </Inputtext>
+          </div>
+
+          <Button
+            label="Login"
+            class="w-full mt-2"
+            :loading="loading"
+            @click="login"
           />
-        </div>
 
-        <div class=" py-2">
-          <input
-            type="password"
-            id="password"
-            v-model="password"
-            placeholder="Password"
-            required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-black shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
+          <div class="text-right mt-2">
+            <a href="#" class="text-sm text-blue-500 hover:underline">Forgot Password?</a>
+          </div>
         </div>
-
-        <button
-          type="submit"
-          :disabled="loading"
-          class="w-full py-3 px-4 bg-[#002e5d] text-white font-semibold rounded-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:opacity-50"
-        >
-          {{ loading ? 'Logging in...' : 'Login' }}
-        </button>
-      </form>
-    </div>
+      </template>
+    </Card>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';;
+
+import Card from 'primevue/card';
+import Inputtext from 'primevue/inputtext';
+import Button from 'primevue/button';
+
 import axios from 'axios';
-import { useAuth } from '../composable/useAuth'; // Import the function, not individual values
-const { isAuthenticated, logout } = useAuth(); // Destructure inside setup
 
-// For debugging (optional)
-import { watch } from 'vue';
-watch(isAuthenticated, (newVal) => {
-  console.log("isAuthenticated changed:", newVal);
-});
-import { nextTick } from 'vue';
-
-const { login } = useAuth();
-
-const username = ref('');
+const email = ref('');
 const password = ref('');
 const loading = ref(false);
-
 const router = useRouter();
 
-const handleLogin = async () => {
-  if (!username.value || !password.value) {
-    console.log({
-      severity: 'warn',
-      summary: 'Missing fields',
-      detail: 'Please enter both Net ID and Password.',
-      life: 3000,
-    });
-    return;
-  }
 
+const login = async () => {
   loading.value = true;
-
   try {
     const response = await axios.post(`${import.meta.env.VITE_API_BASE_URI}/auth/login`, {
-      email: username.value, // or "netId" if your API expects that
+      email: email.value,
       password: password.value,
     });
 
-   login(response.data.token); // handles localStorage and reactivity
-
-   console.log({
-      severity: 'success',
-      summary: 'Login Successful',
-      detail: 'Redirecting...',
-      life: 3000,
-    });
-    await nextTick();
-    router.push('/leaderboard'); // or '/dashboard'
+    localStorage.setItem('token', response.data.token);
+    console.log({ severity: 'success', summary: 'Login Successful', life: 3000 });
+    router.push('/leaderboard');
   } catch (error) {
-    console.log(error)
     console.log({
       severity: 'error',
       summary: 'Login Failed',
-      detail: error.response?.data?.message || 'Invalid Net ID or Password.',
+      detail: error.response?.data?.message || 'Please check your credentials.',
       life: 4000,
     });
   } finally {

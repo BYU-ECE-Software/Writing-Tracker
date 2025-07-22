@@ -1,39 +1,47 @@
 <template>
-  <HeaderBar />
-  <div class="min-h-screen bg-gray-100">
-    <!-- Only show navbar if authenticated -->
-    <Navbar
-     v-if="isAuthenticated.value"
-      :menuItems="menuItems"
-      @logout="logout"
-    />
-    
-    <router-view class="container mx-auto p-4" />
-  </div>
-  <FooterBar />
-</template>
-
-
+    <HeaderBar/>
+    <div class="min-h-screen bg-gray-100">
+      <Menubar :model="menuItems" class="bg-white shadow">
+        <template #end>
+          <Button v-if="isAuthenticated" label="Logout" @click="logout" />
+        </template>
+      </Menubar>
+      <router-view class="container mx-auto p-4" />
+    </div>
+    <FooterBar/>
+  </template>
+  
 <script setup>
-import { useAuth } from '@/composable/useAuth';
-import Navbar from './components/Navbar.vue';
+import { ref, computed, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import Button from 'primevue/button';
+import Menubar from 'primevue/menubar';
 import FooterBar from './components/FooterBar.vue';
 import HeaderBar from './components/HeaderBar.vue';
 
-const { isAuthenticated, logout } = useAuth(); // Destructure inside setup
+const router = useRouter();
 
-const menuItems = [
-  { label: 'Leaderboard', to: '/leaderboard', visible: () => isAuthenticated.value },
-  { label: 'Profile', to: '/profile', visible: () => isAuthenticated.value },
-  { label: 'Login', to: '/login', visible: () => !isAuthenticated.value },
-  { label: 'Register', to: '/register', visible: () => !isAuthenticated.value },
+const token = ref(localStorage.getItem('token'));
+const isAuthenticated = computed(() => !!token.value);
+
+const baseMenuItems = [
+  { label: 'Leaderboard', command: () => router.push('/'), authOnly: true  },
+  { label: 'Profile', command: () => router.push('/profile'), authOnly: true },
+  { label: 'Login', command: () => router.push('/login'), guestOnly: true },
+  { label: 'Register', command: () => router.push('/register'), guestOnly: true },
 ];
+
+const menuItems = computed(() =>
+  baseMenuItems.filter(item => {
+    if (item.authOnly) return isAuthenticated.value;
+    if (item.guestOnly) return !isAuthenticated.value;
+    return true;
+  })
+);
+
+const logout = () => {
+  localStorage.removeItem('token');
+  token.value = null; 
+  router.push('/login');
+};
 </script>
-
-
-
-<style scoped>
-.p-menubar .p-menubar-label {
-  white-space: nowrap;
-}
-</style>
