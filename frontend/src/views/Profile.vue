@@ -1,36 +1,55 @@
 <template>
-  <div class="p-6 max-w-6xl mx-auto">
+  <div class="flex flex-col items-center p-6">
+    <h1 v-if="userProfile" class="text-3xl font-bold mb-4 text-center text-gray-800">
+      Welcome, {{ userProfile?.name || 'Guest' }}
+    </h1>
+
     <!-- User Profile -->
-    <div v-if="userProfile" class="mb-10 border p-4 rounded-lg bg-white shadow">
-      <h1 class="text-2xl font-bold mb-2">Welcome, {{ userProfile.name }}</h1>
-      <p class="text-gray-600">Username: {{ userProfile.username }}</p>
-      <p class="text-gray-600">NetID: {{ userProfile.netId }}</p>
-      <p class="text-gray-600">Lab: {{ userProfile.lab }}</p>
-      <p class="text-gray-600">Email: {{ userProfile.email }}</p>
+    <div
+      v-if="userProfile"
+      class="p-6 border rounded-lg shadow-lg text-center bg-gradient-to-r from-gray-200 to-gray-300 max-w-md mx-auto hover:scale-105 transition-all duration-300"
+    >
+      <img class="w-32 h-32 rounded-full mx-auto mb-4" src="" alt="">
+
+      <div class="text-sm mt-5 space-y-3">
+        <p class="font-medium text-xl text-gray-900 hover:text-indigo-600 transition duration-300 ease-in-out">
+          Username: <span class="font-normal text-gray-700">{{ userProfile.username }}</span>
+        </p>
+        <p class="text-gray-700">NetID: {{ userProfile.netId }}</p>
+        <p class="text-gray-700">Lab: {{ userProfile.lab }}</p>
+        <p class="text-gray-700">
+          Email:
+          <a :href="`mailto:${userProfile.email}`" class="text-indigo-500 hover:text-indigo-700">
+            {{ userProfile.email }}
+          </a>
+        </p>
+      </div>
     </div>
 
+    <!-- Total Logged Hours -->
+    <p v-if="logs.length" class="text-lg font-semibold mt-6 text-indigo-700">
+      Total Logged Hours: {{ totalHours }}
+    </p>
+
     <!-- Logging Time -->
-    <section class="mb-8">
+    <section class="mb-8 mt-10 w-full max-w-4xl">
       <h2 class="text-xl font-semibold mb-3">Log Writing Time</h2>
       <div class="flex flex-wrap gap-4 items-center">
         <InputText v-model="hours" type="number" placeholder="Hours" class="w-24" />
         <Calendar v-model="date" dateFormat="yy-mm-dd" class="min-w-[160px]" />
+        <InputText v-model="lab" placeholder="Lab" class="w-40" />
         <InputText v-model="description" placeholder="Description" class="flex-1" />
         <Button label="Log" @click="logTime" />
       </div>
     </section>
 
-    <!-- Tabs: Logs -->
+    <!-- Tabs -->
     <Tabview>
       <TabPanel header="List View">
-        <DataTable
-          :value="logs"
-          class="shadow rounded-lg border"
-          @row-click="onRowClick"
-          dataKey="_id"
-        >
+        <DataTable :value="logs" class="shadow rounded-lg border" @row-click="onRowClick" dataKey="_id">
           <Column field="date" header="Date" />
           <Column field="hours" header="Hours" />
+          <Column field="lab" header="Lab" />
           <Column field="description" header="Description" />
         </DataTable>
       </TabPanel>
@@ -51,10 +70,11 @@
     </Tabview>
 
     <!-- Selected Log Detail -->
-    <div v-if="selectedLog" class="mt-8 p-4 border rounded bg-gray-50">
+    <div v-if="selectedLog" class="mt-8 p-4 border rounded bg-gray-50 w-full max-w-xl">
       <h3 class="text-lg font-semibold mb-2">Log Details</h3>
       <p><strong>Date:</strong> {{ selectedLog.date }}</p>
       <p><strong>Hours:</strong> {{ selectedLog.hours }}</p>
+      <p><strong>Lab:</strong> {{ selectedLog.lab }}</p>
       <p><strong>Description:</strong> {{ selectedLog.description }}</p>
       <Button label="Close" class="mt-4" @click="selectedLog = null" />
     </div>
@@ -62,7 +82,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
 
 import Calendar from 'primevue/calendar';
@@ -83,6 +103,7 @@ const userProfile = ref(null);
 // Form inputs
 const hours = ref(0);
 const date = ref(new Date());
+const lab = ref('');
 const description = ref('');
 
 // Data
@@ -90,7 +111,12 @@ const logs = ref([]);
 const calendarData = ref([]);
 const selectedLog = ref(null);
 
-// Fetch profile
+// Total hours
+const totalHours = computed(() => {
+  return logs.value.reduce((sum, log) => sum + log.hours, 0);
+});
+
+// Fetch user profile
 const fetchUserProfile = async () => {
   try {
     const res = await axios.get(`${API_BASE}/users/profile`, AUTH_HEADER);
@@ -106,12 +132,14 @@ const logTime = async () => {
     const payload = {
       hours: hours.value,
       date: date.value.toISOString(),
+      lab: lab.value,
       description: description.value,
     };
 
     await axios.post(`${API_BASE}/logs/log`, payload, AUTH_HEADER);
 
     hours.value = 0;
+    lab.value = '';
     description.value = '';
     await fetchLogs();
   } catch (error) {
@@ -158,7 +186,7 @@ const generateCalendarView = () => {
   calendarData.value = days;
 };
 
-// Utility
+// Color intensity for calendar cells
 const getColorIntensity = (hours) => {
   if (hours >= 6) return 600;
   if (hours >= 4) return 400;
@@ -166,7 +194,7 @@ const getColorIntensity = (hours) => {
   return 200;
 };
 
-// Click handlers
+// Row click handlers
 const onRowClick = ({ data }) => {
   selectedLog.value = data;
 };

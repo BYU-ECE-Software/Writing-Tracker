@@ -1,5 +1,5 @@
 const express = require("express");
-const jwt = require("jsonwebtoken"); // <--  Make sure this is imported
+const jwt = require("jsonwebtoken");
 
 const {
   createLog,
@@ -9,26 +9,29 @@ const {
 
 const router = express.Router();
 
-//  Middleware to authenticate using JWT
+// ✅ Middleware to authenticate using JWT
 const authenticate = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) return res.status(401).json({ error: "Unauthorized" });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { _id: decoded.userId }; 
+    req.user = { _id: decoded.userId };
     next();
   } catch (error) {
     res.status(401).json({ error: "Invalid token" });
   }
 };
 
+//  ROUTES
 
-//  Routes
+// GET /api/logs — fetch logs for the authenticated user
+router.get("/", authenticate, getUserLog);
+
+// POST /api/logs/log — create a new log
 router.post("/log", authenticate, createLog);
-router.get("/logs", getAllLogs);
-// router.get("/logs/:id", getLogById);
-// router.put("/logs/:id", updateLog);
-// router.delete("/logs/:id", deleteLog);
+
+// (optional) GET /api/logs/all — fetch all logs (admin use)
+router.get("/all", authenticate, getAllLogs);
 
 module.exports = router;
