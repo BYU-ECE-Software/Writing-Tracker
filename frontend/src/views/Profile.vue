@@ -1,5 +1,6 @@
 <template>
   <div class="flex flex-col items-center p-6">
+    <!-- Welcome -->
     <h1 v-if="userProfile" class="text-3xl font-bold mb-4 text-center text-gray-800">
       Welcome, {{ userProfile?.name || 'Guest' }}
     </h1>
@@ -12,7 +13,7 @@
       <img class="w-32 h-32 rounded-full mx-auto mb-4" src="" alt="">
 
       <div class="text-sm mt-5 space-y-3">
-        <p class="font-medium text-xl text-gray-900 hover:text-indigo-600 transition duration-300 ease-in-out">
+        <p class="font-medium text-xl text-gray-900">
           Username: <span class="font-normal text-gray-700">{{ userProfile.username }}</span>
         </p>
         <p class="text-gray-700">NetID: {{ userProfile.netId }}</p>
@@ -44,9 +45,14 @@
     </section>
 
     <!-- Tabs -->
-    <Tabview>
+    <TabView>
       <TabPanel header="List View">
-        <DataTable :value="logs" class="shadow rounded-lg border" @row-click="onRowClick" dataKey="_id">
+        <DataTable
+          :value="logs"
+          class="shadow rounded-lg border"
+          @row-click="onRowClick"
+          dataKey="_id"
+        >
           <Column field="date" header="Date" />
           <Column field="hours" header="Hours" />
           <Column field="lab" header="Lab" />
@@ -67,7 +73,7 @@
           </div>
         </div>
       </TabPanel>
-    </Tabview>
+    </TabView>
 
     <!-- Selected Log Detail -->
     <div v-if="selectedLog" class="mt-8 p-4 border rounded bg-gray-50 w-full max-w-xl">
@@ -90,54 +96,53 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import Tabview from 'primevue/tabview';
+import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 
-const API_BASE = 'http://localhost:5000/api';
 const token = localStorage.getItem('token');
-const AUTH_HEADER = { headers: { Authorization: `Bearer ${token}` } };
+console.log("Token from localStorage:", token);
+const getAuthHeader = () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    throw new Error('No token found — please log in.');
+  }
+  return { headers: { Authorization: `Bearer ${token}` } };
+};
 
-// User profile
+
+// State
 const userProfile = ref(null);
-
-// Form inputs
 const hours = ref(0);
 const date = ref(new Date());
 const lab = ref('');
 const description = ref('');
-
-// Data
 const logs = ref([]);
 const calendarData = ref([]);
 const selectedLog = ref(null);
 
-// Total hours
-const totalHours = computed(() => {
-  return logs.value.reduce((sum, log) => sum + log.hours, 0);
-});
+const totalHours = computed(() =>
+  logs.value.reduce((sum, log) => sum + Number(log.hours || 0), 0)
+);
 
-// Fetch user profile
+// API calls
 const fetchUserProfile = async () => {
   try {
-    const res = await axios.get(`${API_BASE}/users/profile`, AUTH_HEADER);
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URI}/users/profile`, getAuthHeader());
     userProfile.value = res.data;
   } catch (err) {
     console.error('Failed to fetch user profile:', err);
   }
 };
 
-// Submit log
 const logTime = async () => {
   try {
     const payload = {
-      hours: hours.value,
+      hours: Number(hours.value),
       date: date.value.toISOString(),
       lab: lab.value,
       description: description.value,
     };
-
-    await axios.post(`${API_BASE}/logs/log`, payload, AUTH_HEADER);
-
+    await axios.post(`${import.meta.env.VITE_API_BASE_URI}/logs/log`, payload, getAuthHeader());
     hours.value = 0;
     lab.value = '';
     description.value = '';
@@ -147,18 +152,17 @@ const logTime = async () => {
   }
 };
 
-// Fetch all logs
 const fetchLogs = async () => {
   try {
-    const res = await axios.get(`${API_BASE}/logs`, AUTH_HEADER);
-    logs.value = res.data;
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URI}/logs`, getAuthHeader());
+    logs.value = Array.isArray(res.data) ? res.data : [];
     generateCalendarView();
   } catch (err) {
     console.error('Error fetching logs:', err);
   }
 };
 
-// Calendar generation
+// Calendar
 const generateCalendarView = () => {
   const start = new Date();
   start.setFullYear(start.getFullYear() - 1);
@@ -169,38 +173,45 @@ const generateCalendarView = () => {
     current.setDate(start.getDate() + i);
     const isoDate = current.toISOString().split('T')[0];
 
-    const log = logs.value.find(entry => entry.date?.startsWith(isoDate));
-    const logHours = log?.hours || 0;
+    const log = logs.value.find(entry => {
+      const entryDate = new Date(entry.date).toISOString().split('T')[0];
+      return entryDate === isoDate;
+    });
 
+    const logHours = log?.hours || 0;
     const colorClass = logHours
-      ? `bg-green-${getColorIntensity(logHours)}`
+      ? colorMap[getColorIntensity(logHours)]
       : 'bg-gray-200';
 
-    days.push({
-      date: isoDate,
-      hours: logHours,
-      class: colorClass,
-    });
+    days.push({ date: isoDate, hours: logHours, class: colorClass });
   }
-
   calendarData.value = days;
 };
 
-// Color intensity for calendar cells
-const getColorIntensity = (hours) => {
+const getColorIntensity = hours => {
   if (hours >= 6) return 600;
   if (hours >= 4) return 400;
   if (hours >= 2) return 300;
   return 200;
 };
 
-// Row click handlers
+const colorMap = {
+  200: 'bg-green-200',
+  300: 'bg-green-300',
+  400: 'bg-green-400',
+  600: 'bg-green-600',
+};
+
+// UI handlers
 const onRowClick = ({ data }) => {
   selectedLog.value = data;
 };
 
-const fetchLogByDate = (dateStr) => {
-  const match = logs.value.find(log => log.date?.startsWith(dateStr));
+const fetchLogByDate = dateStr => {
+  const match = logs.value.find(log => {
+    const logDate = new Date(log.date).toISOString().split('T')[0];
+    return logDate === dateStr;
+  });
   if (match) selectedLog.value = match;
 };
 
