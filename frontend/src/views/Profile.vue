@@ -1,17 +1,18 @@
 <template>
-  <div class="flex flex-col md:flex-row md:items-center p-6 gap-3">
+  <div class="flex flex-col md:flex-row md:items-start p-6 gap-6 md:mx-36">
 
     <!-- User Profile -->
-    <div v-if="userProfile"
-      class="flex flex-col items-center p-6 gap-3 border rounded-lg shadow-lg text-center bg-gradient-to-r from-gray-200 to-gray-300 max-w-md mx-auto hover:scale-105 transition-all duration-300">
-      <h1 v-if="userProfile" class="text-3xl font-bold mb-4 text-center text-gray-800">
-          {{ greeting }}
-      </h1>
-      <img :src="avatar" class="w-20 h-20 rounded-full border-4 border-gray-400" />
-      <div class="text-sm mt-5 space-y-3">
-        <p class="font-medium text-xl text-gray-900">
-           <span class="font-normal text-gray-700">{{ userProfile.name }}</span>
-        </p>
+    <section
+      v-if="userProfile"
+      class="flex flex-col items-center p-6 gap-4 border rounded-lg shadow-lg text-center 
+             bg-gradient-to-r from-gray-100 to-gray-200 max-w-md w-full mx-auto 
+             hover:scale-105 transition-transform duration-300"
+    >
+      <h1 class="text-3xl font-bold text-gray-800">{{ greeting }}</h1>
+      <img :src="avatar" alt="User Avatar" class="w-20 h-20 rounded-full border-4 border-gray-300" />
+
+      <div class="space-y-2 text-sm mt-4">
+        <p class="text-xl font-medium text-gray-900">{{ userProfile.name }}</p>
         <p class="text-gray-700">NetID: {{ userProfile.netId }}</p>
         <p class="text-gray-700">Lab: {{ userProfile.lab }}</p>
         <p class="text-gray-700">
@@ -21,16 +22,18 @@
           </a>
         </p>
       </div>
-      <!-- Total Logged Hours -->
-      <p v-if="logs.length" class="text-lg font-semibold mt-6 text-indigo-700">
+
+      <p v-if="logs.length" class="text-lg font-semibold mt-4 text-indigo-700">
         Total Logged Hours: {{ totalHours }}
       </p>
-    </div>
+    </section>
 
-    <div class="flex flex-col justify-between">
+    <!-- Main Content -->
+    <div class="flex flex-col gap-8 w-full">
+
       <!-- Logging Time -->
-      <section class="mb-8 mt-10 w-full max-w-4xl">
-        <h2 class="text-xl font-semibold mb-3">Log Writing Time</h2>
+      <section class="w-full max-w-4xl">
+        <h2 class="text-xl font-semibold mb-4">Log Writing Time</h2>
         <div class="flex flex-wrap gap-4 items-center">
           <InputText v-model="hours" type="number" placeholder="Hours" class="w-24" />
           <Calendar v-model="date" dateFormat="yy-mm-dd" class="min-w-[160px]" />
@@ -52,10 +55,14 @@
         </TabPanel>
 
         <TabPanel header="Calendar View">
-          <div class="calendar-grid border rounded p-2">
-            <div v-for="day in calendarData" :key="day.date"
+          <div class="calendar-grid border rounded p-2 bg-white">
+            <div
+              v-for="day in calendarData"
+              :key="day.date"
               :class="['h-6 w-6 text-xs text-center rounded cursor-pointer', day.class]"
-              :title="`${day.date}: ${day.hours || 0}h`" @click="fetchLogByDate(day.date)">
+              :title="`${day.date}: ${day.hours || 0}h`"
+              @click="fetchLogByDate(day.date)"
+            >
               {{ day.hours ? `${day.hours}h` : '' }}
             </div>
           </div>
@@ -63,18 +70,18 @@
       </TabView>
 
       <!-- Selected Log Detail -->
-      <div v-if="selectedLog" class="mt-8 p-4 border rounded bg-gray-50 w-full max-w-xl">
+      <section
+        v-if="selectedLog"
+        class="p-4 border rounded bg-gray-50 w-full max-w-xl"
+      >
         <h3 class="text-lg font-semibold mb-2">Log Details</h3>
         <p><strong>Date:</strong> {{ selectedLog.date }}</p>
         <p><strong>Hours:</strong> {{ selectedLog.hours }}</p>
         <p><strong>Lab:</strong> {{ selectedLog.lab }}</p>
         <p><strong>Description:</strong> {{ selectedLog.description }}</p>
         <Button label="Close" class="mt-4" @click="selectedLog = null" />
-      </div>
-
+      </section>
     </div>
-
-
   </div>
 </template>
 
@@ -91,16 +98,12 @@ import Column from 'primevue/column';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 
-const token = localStorage.getItem('token');
-console.log("Token from localStorage:", token);
+// Auth header helper
 const getAuthHeader = () => {
   const token = localStorage.getItem('token');
-  if (!token) {
-    throw new Error('No token found — please log in.');
-  }
+  if (!token) throw new Error('No token found — please log in.');
   return { headers: { Authorization: `Bearer ${token}` } };
 };
-
 
 // State
 const userProfile = ref(null);
@@ -112,15 +115,14 @@ const logs = ref([]);
 const calendarData = ref([]);
 const selectedLog = ref(null);
 
+// Computed
 const greeting = computed(() => {
   const hour = new Date().getHours();
-  if (hour < 12) {
-    return "Good morning";
-  } else if (hour < 18) {
-    return "Good afternoon";
-  } else {
-    return "Good evening";
-  }
+  return hour < 12
+    ? 'Good morning'
+    : hour < 18
+    ? 'Good afternoon'
+    : 'Good evening';
 });
 
 const totalHours = computed(() =>
@@ -130,38 +132,41 @@ const totalHours = computed(() =>
 // API calls
 const fetchUserProfile = async () => {
   try {
-    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URI}/users/profile`, getAuthHeader());
-    userProfile.value = res.data;
+    const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URI}/users/profile`, getAuthHeader());
+    userProfile.value = data;
   } catch (err) {
     console.error('Failed to fetch user profile:', err);
   }
 };
 
+const fetchLogs = async () => {
+  try {
+    const { data } = await axios.get(`${import.meta.env.VITE_API_BASE_URI}/logs/`, getAuthHeader());
+    logs.value = Array.isArray(data) ? data : [];
+    generateCalendarView();
+  } catch (err) {
+    console.error('Error fetching logs:', err);
+  }
+};
+
 const logTime = async () => {
   try {
-    const payload = {
-      hours: Number(hours.value),
-      date: date.value.toISOString(),
-      lab: lab.value,
-      description: description.value,
-    };
-    await axios.post(`${import.meta.env.VITE_API_BASE_URI}/logs/log`, payload, getAuthHeader());
+    await axios.post(
+      `${import.meta.env.VITE_API_BASE_URI}/logs/log`,
+      {
+        hours: Number(hours.value),
+        date: date.value.toISOString(),
+        lab: lab.value,
+        description: description.value,
+      },
+      getAuthHeader()
+    );
     hours.value = 0;
     lab.value = '';
     description.value = '';
     await fetchLogs();
   } catch (error) {
     console.error('Error logging time:', error);
-  }
-};
-
-const fetchLogs = async () => {
-  try {
-    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URI}/logs/`, getAuthHeader());
-    logs.value = Array.isArray(res.data) ? res.data : [];
-    generateCalendarView();
-  } catch (err) {
-    console.error('Error fetching logs:', err);
   }
 };
 
@@ -174,17 +179,12 @@ const generateCalendarView = () => {
   for (let i = 0; i < 365; i++) {
     const current = new Date(start);
     current.setDate(start.getDate() + i);
-    const isoDate = current.toISOString().split('T')[0];
 
-    const log = logs.value.find(entry => {
-      const entryDate = new Date(entry.date).toISOString().split('T')[0];
-      return entryDate === isoDate;
-    });
+    const isoDate = formatDate(current);
+    const log = logs.value.find(entry => formatDate(new Date(entry.date)) === isoDate);
 
     const logHours = log?.hours || 0;
-    const colorClass = logHours
-      ? colorMap[getColorIntensity(logHours)]
-      : 'bg-gray-200';
+    const colorClass = logHours ? colorMap[getColorIntensity(logHours)] : 'bg-gray-200';
 
     days.push({ date: isoDate, hours: logHours, class: colorClass });
   }
@@ -205,19 +205,17 @@ const colorMap = {
   600: 'bg-green-600',
 };
 
+const formatDate = date => date.toISOString().split('T')[0];
+
 // UI handlers
-const onRowClick = ({ data }) => {
-  selectedLog.value = data;
-};
+const onRowClick = ({ data }) => (selectedLog.value = data);
 
 const fetchLogByDate = dateStr => {
-  const match = logs.value.find(log => {
-    const logDate = new Date(log.date).toISOString().split('T')[0];
-    return logDate === dateStr;
-  });
+  const match = logs.value.find(log => formatDate(new Date(log.date)) === dateStr);
   if (match) selectedLog.value = match;
 };
 
+// Lifecycle
 onMounted(() => {
   fetchUserProfile();
   fetchLogs();
