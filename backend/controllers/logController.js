@@ -34,27 +34,20 @@ exports.createLog = async (req, res) => {
   }
 };
 
-exports.getUserLog = [
-  authenticate,
-  async (req, res) => {
-    try {
-      const logs = await Log.find({ userId: req.user._id }).sort({ date: -1 });
-      res.json(logs);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch logs' });
-    }
+exports.getUserLog = async (req, res) => {
+  try {
+    const logs = await Log.find({ userId: req.user._id }).sort({ date: -1 });
+    res.json(logs);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch logs' });
   }
-];
+};
 
-
-exports.getAllLogs = [
-  authenticate,
-  async (req, res) => {
-    try {
-      const logs = await Log.find().sort({ date: -1 });
-      res.json(logs);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to fetch all logs' });
-    }
+exports.getAllLogs = async (req, res) => {
+  try {
+    const logs = await Log.find().sort({ date: -1 });
+    res.json(logs);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch all logs' });
   }
-];
+};

@@ -154,7 +154,7 @@ const logTime = async () => {
 
 const fetchLogs = async () => {
   try {
-    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URI}/logs`, getAuthHeader());
+    const res = await axios.get(`${import.meta.env.VITE_API_BASE_URI}/logs/`, getAuthHeader());
     logs.value = Array.isArray(res.data) ? res.data : [];
     generateCalendarView();
   } catch (err) {

@@ -25,7 +25,7 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-    "email": "test1@byu.test",
+    "email": "test7@byu.test",
   "password": "12345678"
 }
 
@@ -56,17 +56,21 @@ Content-Type: application/json
 ###
 #Log user logs
 POST http://localhost:5000/api/logs/log
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1Mzg2ODQ0ZjI2ODgxMTVmNzVhMzAiLCJpYXQiOjE3NTM3MjA5MzgsImV4cCI6MTc1MzcyNDUzOH0.lw7nPjmiBvQqJKyoCzFzy1qUyGSyFG0XvSwvv2U0314
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlmNmI2YWViM2QxOTc0NTY3NDAiLCJpYXQiOjE3NTUwOTk5MDcsImV4cCI6MTc1NTEwMzUwN30.NLWvropMMoOgwEKeMwxHzkFNIBjwS6zD-81ODG0kqWg
 Content-Type: application/json
 
 {
-  "date": "2025-07-12",
-  "hours": 1.5,
-  "lab": "overLoad",
-  "description": "Wolrd Domination 3."
+  "date": "2025-08-13",
+  "hours": 2.5,
+  "lab": "Test 2",
+  "description": "changed authentication"
 }
 
-
+###
+#Log user logs
+GET  http://localhost:5000/api/logs/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlmNmI2YWViM2QxOTc0NTY3NDAiLCJpYXQiOjE3NTUwOTk5MDcsImV4cCI6MTc1NTEwMzUwN30.NLWvropMMoOgwEKeMwxHzkFNIBjwS6zD-81ODG0kqWg
+Content-Type: application/json
 ###
 #Delete user profiles API
 DELETE  http://localhost:5000/api/users/profile
