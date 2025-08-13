@@ -9,7 +9,7 @@
              hover:scale-105 transition-transform duration-300"
     >
       <h1 class="text-3xl font-bold text-gray-800">{{ greeting }}</h1>
-      <img :src="avatar" alt="User Avatar" class="w-20 h-20 rounded-full border-4 border-gray-300" />
+      <img :src="avatar" alt="User Avatar" class="w-20 h-20 rounded-full border-4 border-green-500" />
 
       <div class="space-y-2 text-sm mt-4">
         <p class="text-xl font-medium text-gray-900">{{ userProfile.name }}</p>
