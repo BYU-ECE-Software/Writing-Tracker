@@ -1,20 +1,16 @@
 <template>
-  <div class="flex flex-col items-center p-6">
-    <!-- Welcome -->
-    <h1 v-if="userProfile" class="text-3xl font-bold mb-4 text-center text-gray-800">
-      Welcome, {{ userProfile?.name || 'Guest' }}
-    </h1>
+  <div class="flex flex-col md:flex-row md:items-center p-6 gap-3">
 
     <!-- User Profile -->
-    <div
-      v-if="userProfile"
-      class="p-6 border rounded-lg shadow-lg text-center bg-gradient-to-r from-gray-200 to-gray-300 max-w-md mx-auto hover:scale-105 transition-all duration-300"
-    >
-      <img class="w-32 h-32 rounded-full mx-auto mb-4" src="" alt="">
-
+    <div v-if="userProfile"
+      class="flex flex-col items-center p-6 gap-3 border rounded-lg shadow-lg text-center bg-gradient-to-r from-gray-200 to-gray-300 max-w-md mx-auto hover:scale-105 transition-all duration-300">
+      <h1 v-if="userProfile" class="text-3xl font-bold mb-4 text-center text-gray-800">
+          {{ greeting }}
+      </h1>
+      <img :src="avatar" class="w-20 h-20 rounded-full border-4 border-gray-400" />
       <div class="text-sm mt-5 space-y-3">
         <p class="font-medium text-xl text-gray-900">
-          Username: <span class="font-normal text-gray-700">{{ userProfile.username }}</span>
+           <span class="font-normal text-gray-700">{{ userProfile.name }}</span>
         </p>
         <p class="text-gray-700">NetID: {{ userProfile.netId }}</p>
         <p class="text-gray-700">Lab: {{ userProfile.lab }}</p>
@@ -25,71 +21,67 @@
           </a>
         </p>
       </div>
+      <!-- Total Logged Hours -->
+      <p v-if="logs.length" class="text-lg font-semibold mt-6 text-indigo-700">
+        Total Logged Hours: {{ totalHours }}
+      </p>
     </div>
 
-    <!-- Total Logged Hours -->
-    <p v-if="logs.length" class="text-lg font-semibold mt-6 text-indigo-700">
-      Total Logged Hours: {{ totalHours }}
-    </p>
-
-    <!-- Logging Time -->
-    <section class="mb-8 mt-10 w-full max-w-4xl">
-      <h2 class="text-xl font-semibold mb-3">Log Writing Time</h2>
-      <div class="flex flex-wrap gap-4 items-center">
-        <InputText v-model="hours" type="number" placeholder="Hours" class="w-24" />
-        <Calendar v-model="date" dateFormat="yy-mm-dd" class="min-w-[160px]" />
-        <InputText v-model="lab" placeholder="Lab" class="w-40" />
-        <InputText v-model="description" placeholder="Description" class="flex-1" />
-        <Button label="Log" @click="logTime" />
-      </div>
-    </section>
-
-    <!-- Tabs -->
-    <TabView>
-      <TabPanel header="List View">
-        <DataTable
-          :value="logs"
-          class="shadow rounded-lg border"
-          @row-click="onRowClick"
-          dataKey="_id"
-        >
-          <Column field="date" header="Date" />
-          <Column field="hours" header="Hours" />
-          <Column field="lab" header="Lab" />
-          <Column field="description" header="Description" />
-        </DataTable>
-      </TabPanel>
-
-      <TabPanel header="Calendar View">
-        <div class="calendar-grid border rounded p-2">
-          <div
-            v-for="day in calendarData"
-            :key="day.date"
-            :class="['h-6 w-6 text-xs text-center rounded cursor-pointer', day.class]"
-            :title="`${day.date}: ${day.hours || 0}h`"
-            @click="fetchLogByDate(day.date)"
-          >
-            {{ day.hours ? `${day.hours}h` : '' }}
-          </div>
+    <div class="flex flex-col justify-between">
+      <!-- Logging Time -->
+      <section class="mb-8 mt-10 w-full max-w-4xl">
+        <h2 class="text-xl font-semibold mb-3">Log Writing Time</h2>
+        <div class="flex flex-wrap gap-4 items-center">
+          <InputText v-model="hours" type="number" placeholder="Hours" class="w-24" />
+          <Calendar v-model="date" dateFormat="yy-mm-dd" class="min-w-[160px]" />
+          <InputText v-model="lab" placeholder="Lab" class="w-40" />
+          <InputText v-model="description" placeholder="Description" class="flex-1" />
+          <Button label="Log" @click="logTime" />
         </div>
-      </TabPanel>
-    </TabView>
+      </section>
 
-    <!-- Selected Log Detail -->
-    <div v-if="selectedLog" class="mt-8 p-4 border rounded bg-gray-50 w-full max-w-xl">
-      <h3 class="text-lg font-semibold mb-2">Log Details</h3>
-      <p><strong>Date:</strong> {{ selectedLog.date }}</p>
-      <p><strong>Hours:</strong> {{ selectedLog.hours }}</p>
-      <p><strong>Lab:</strong> {{ selectedLog.lab }}</p>
-      <p><strong>Description:</strong> {{ selectedLog.description }}</p>
-      <Button label="Close" class="mt-4" @click="selectedLog = null" />
+      <!-- Tabs -->
+      <TabView>
+        <TabPanel header="List View">
+          <DataTable :value="logs" class="shadow rounded-lg border" @row-click="onRowClick" dataKey="_id">
+            <Column field="date" header="Date" />
+            <Column field="hours" header="Hours" />
+            <Column field="lab" header="Lab" />
+            <Column field="description" header="Description" />
+          </DataTable>
+        </TabPanel>
+
+        <TabPanel header="Calendar View">
+          <div class="calendar-grid border rounded p-2">
+            <div v-for="day in calendarData" :key="day.date"
+              :class="['h-6 w-6 text-xs text-center rounded cursor-pointer', day.class]"
+              :title="`${day.date}: ${day.hours || 0}h`" @click="fetchLogByDate(day.date)">
+              {{ day.hours ? `${day.hours}h` : '' }}
+            </div>
+          </div>
+        </TabPanel>
+      </TabView>
+
+      <!-- Selected Log Detail -->
+      <div v-if="selectedLog" class="mt-8 p-4 border rounded bg-gray-50 w-full max-w-xl">
+        <h3 class="text-lg font-semibold mb-2">Log Details</h3>
+        <p><strong>Date:</strong> {{ selectedLog.date }}</p>
+        <p><strong>Hours:</strong> {{ selectedLog.hours }}</p>
+        <p><strong>Lab:</strong> {{ selectedLog.lab }}</p>
+        <p><strong>Description:</strong> {{ selectedLog.description }}</p>
+        <Button label="Close" class="mt-4" @click="selectedLog = null" />
+      </div>
+
     </div>
+
+
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import axios from 'axios';
+import avatar from '@/assets/avatar.png';
 
 import Calendar from 'primevue/calendar';
 import Button from 'primevue/button';
@@ -119,6 +111,17 @@ const description = ref('');
 const logs = ref([]);
 const calendarData = ref([]);
 const selectedLog = ref(null);
+
+const greeting = computed(() => {
+  const hour = new Date().getHours();
+  if (hour < 12) {
+    return "Good morning";
+  } else if (hour < 18) {
+    return "Good afternoon";
+  } else {
+    return "Good evening";
+  }
+});
 
 const totalHours = computed(() =>
   logs.value.reduce((sum, log) => sum + Number(log.hours || 0), 0)
