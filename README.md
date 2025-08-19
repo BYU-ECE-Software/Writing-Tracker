@@ -1,6 +1,6 @@
 # 📚 BYU ECE Writing Tracker
 
-A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to **gamify writing** and monitor lab members' writing activity. Who's writing the most? Now you'll know.
+A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to **gamify writing** and monitor lab members' writing activity.
 
 ---
 
@@ -8,7 +8,7 @@ A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to 
 
 - **Frontend:** Vue 3, PrimeVue 4, TailwindCSS  
 - **Backend:** Node.js, Express  
-- **Package Manager:** PNPM
+- **Package Manager:** NPM
 
 ---
 
@@ -20,7 +20,7 @@ A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to 
 git clone https://github.com/BYU-ECE-Software/Writing-Tracker
 cd Writing-Tracker
 
-2. Start the Frontend
+### 2. Start the Frontend
 
 Open a terminal and run:
 
@@ -28,7 +28,7 @@ cd frontend
 pnpm install
 pnpm run dev
 
-3. Start the Backend
+### 3. Start the Backend
 
 Open a second terminal and run:
 
@@ -37,6 +37,42 @@ pnpm install
 node server.js
 
 You should now be able to navigate to the provided frontend URL (typically http://localhost:5173) to use the app.
+
+### 🔒 Environment Variables
+
+Copy .env.example to .env in the project root and configure as needed:
+
+VITE_API_URL=http://localhost:5000/api
+VITE_APP_ENV=development
+
+---
+
+## 📑 Documentation
+
+- [Code Documentation](./docs/CODE_DOCS.md)  
+- [User Guide](./docs/USER_GUIDE.md)  
+- [Developer Documentation](./docs/DEV_DOCS.md)  
+
+---
+
+## 🚀 Quick Start
+
+### Requirements
+- Node.js vXX
+- npm or yarn
+
+### Setup
+```bash
+# Clone repo
+git clone <repo-url>
+cd project-folder
+
+# Install dependencies
+npm install
+
+# Copy environment file
+cp .env.example .env
+
 🗺 Roadmap
 
     ✅ MVP to display tracked writing sessions

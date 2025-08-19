@@ -11,21 +11,30 @@ const userRoutes = require('./routes/userRoutes');
 const logRoutes = require('./routes/logRoutes');
 const Log = require('./models/Log');
 
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173'];
+// const allowedOrigins = ['http://localhost:3000', 'http://localhost'];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true, // if you want to send cookies or Authorization headers
-};
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   credentials: true, // if you want to send cookies or Authorization headers
+// };
 
 const app = express();
-app.use(cors(corsOptions));
+
+// ONLY needed for development when frontend talks directly to API
+if (process.env.NODE_ENV !== 'production') {
+  app.use(cors({
+    origin: ['http://localhost', 'http://localhost:5173'],
+    credentials: true
+  }));
+}
+
+// app.use(cors(corsOptions));
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI)
@@ -85,7 +94,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/logs", logRoutes);
 
-const PORT = process.env.PORT || 5000;
-const IP = process.env.IP || 'localhost';
+const PORT = process.env.PORT ;
+const IP = process.env.IP ;
 
 app.listen(PORT, IP, () => console.log(`Server running on ${IP}:${PORT}`));

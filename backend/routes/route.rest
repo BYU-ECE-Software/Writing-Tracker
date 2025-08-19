@@ -21,7 +21,7 @@ Content-Type: application/json
 
 ###
 #user Login API
-POST http://localhost:5000/api/auth/login
+POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
@@ -31,8 +31,8 @@ Content-Type: application/json
 
 ###
 #update user profile API
-PUT http://localhost:5000/api/users/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MTJmOTliOWVkNDc2YTExYTQ4OWUiLCJpYXQiOjE3NTI1MTA3MDIsImV4cCI6MTc1MjUyNTEwMn0.XwGcd3-tmo1RW4UahVA7qEY4hF1jH0wALKXdhmkOSlQ
+PUT http://localhost:3000/api/users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlmNmI2YWViM2QxOTc0NTY3NDAiLCJpYXQiOjE3NTU1NTQ1OTIsImV4cCI6MTc1NTU1ODE5Mn0.ek3QR57Jui_2APeDj8j6OSe610kKazMAcmu1aFbl2e4
 Content-Type: application/json
 
 
@@ -48,22 +48,22 @@ Content-Type: application/json
 
 ###
 #get user profiles API
-GET http://localhost:5000/api/users/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlhZDA1MWNlYzU4NWVkNGU5MjEiLCJpYXQiOjE3NTMyMjI4ODMsImV4cCI6MTc1MzIyNjQ4M30.xHBDPuRop4iFmDEponxD0MvEkRCUU081m2o1iKcZI98
+GET http://localhost:3000/api/users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlmNmI2YWViM2QxOTc0NTY3NDAiLCJpYXQiOjE3NTU1NTQ1OTIsImV4cCI6MTc1NTU1ODE5Mn0.ek3QR57Jui_2APeDj8j6OSe610kKazMAcmu1aFbl2e4
 Content-Type: application/json
 
 
 ###
 #Log user logs
-POST http://localhost:5000/api/logs/log
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlmNmI2YWViM2QxOTc0NTY3NDAiLCJpYXQiOjE3NTUwOTk5MDcsImV4cCI6MTc1NTEwMzUwN30.NLWvropMMoOgwEKeMwxHzkFNIBjwS6zD-81ODG0kqWg
+POST http://localhost:3000/api/logs/log
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlmNmI2YWViM2QxOTc0NTY3NDAiLCJpYXQiOjE3NTU1NTQ1OTIsImV4cCI6MTc1NTU1ODE5Mn0.ek3QR57Jui_2APeDj8j6OSe610kKazMAcmu1aFbl2e4
 Content-Type: application/json
 
 {
-  "date": "2025-08-13",
-  "hours": 2.5,
-  "lab": "Test 2",
-  "description": "changed authentication"
+  "date": "2025-08-18",
+  "hours": 4.5,
+  "lab": "Test 4",
+  "description": "Docker"
 }
 
 ###
