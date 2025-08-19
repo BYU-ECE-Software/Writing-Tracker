@@ -3,6 +3,12 @@
 A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to **gamify writing** and monitor lab members' writing activity.
 
 ---
+## 📑 Documentation
+
+- [User Guide](./docs/USER_GUIDE.md)  
+- [Code Documentation](./docs/CODE_DOCS.md)  
+- [Developer Documentation](./docs/DEV_DOCS.md)  
+---
 
 ## 🛠 Tech Stack
 
@@ -48,14 +54,6 @@ VITE_APP_ENV=development
 
 ---
 
-## 📑 Documentation
-
-- [Code Documentation](./docs/CODE_DOCS.md)  
-- [User Guide](./docs/USER_GUIDE.md)  
-- [Developer Documentation](./docs/DEV_DOCS.md)  
-
----
-
 ## 🚀 Quick Start
 
 ### Requirements
@@ -74,19 +72,10 @@ npm install
 # Copy environment file
 cp .env.example .env
 
-🗺 Roadmap
-
-    ✅ MVP to display tracked writing sessions
-
-    🛠 Add badge system for user profiles
-
-    🔒 Improve authentication & session tracking
-
-    📊 Include analytics dashboard
-
 👥 Authors
 
     @romanvish
+    @michaelkane
 
 🤝 Contributing
 
