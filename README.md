@@ -19,33 +19,17 @@ A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to 
 ### Setup
 ```bash
 # Clone repo
-git clone <repo-url>
-cd project-folder
+git clone https://github.com/BYU-ECE-Software/Writing-Tracker
+cd Writing-Tracker
 
 # Install dependencies
 npm install
 
 # Copy environment file
 cp .env.example .env
-
+```
 👥 Authors
 
     @romanvish
     @michaelkane
 
-🤝 Contributing
-
-Contributions are welcome! To contribute:
-
-    Fork the repository
-
-    Create a new branch (git checkout -b feature/some-feature)
-
-    Commit your changes (git commit -m 'Add some feature')
-
-    Push to the branch (git push origin feature/some-feature)
-
-    Open a pull request
-
-Please follow BYU branding guidelines when applicable.
-❓ FAQ
