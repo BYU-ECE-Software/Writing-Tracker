@@ -19,23 +19,24 @@ A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to 
 ```bash
 git clone https://github.com/BYU-ECE-Software/Writing-Tracker
 cd Writing-Tracker
-
+```
 ### 2. Start the Frontend
 
 Open a terminal and run:
-
+```
 cd frontend
 pnpm install
 pnpm run dev
+```
 
 ### 3. Start the Backend
 
 Open a second terminal and run:
-
+```
 cd backend
 pnpm install
 node server.js
-
+```
 You should now be able to navigate to the provided frontend URL (typically http://localhost:5173) to use the app.
 
 ### 🔒 Environment Variables
