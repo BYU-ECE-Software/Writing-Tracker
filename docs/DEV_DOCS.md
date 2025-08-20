@@ -45,24 +45,23 @@ Create .env in the project root and configure as needed:
 # Example Environment File
 
 #.env.example
+# ================================
+# 🌍 Environment Configuration
+# ================================
 
-### ================================
-### 🌍 Environment Configuration
-### ================================
-
-### API base URL
-### Example: http://localhost:5000/api
+# API base URL
+# Example: http://localhost:5000/api
 VITE_API_URL=http://localhost:5000/api
 
-### Application environment
-### Options: development | production
+# Application environment
+# Options: development | production
 VITE_APP_ENV=development
 
-### ================================
-### 🔒 Authentication / Security
-### (Uncomment and configure if needed)
-### ================================
 
-### VITE_AUTH_SECRET=your-secret-key
-### VITE_AUTH_PROVIDER=local
+# ================================
+# 🔒 Authentication / Security
+# ================================
 
+# Uncomment and configure if needed
+# VITE_AUTH_SECRET=your-secret-key
+# VITE_AUTH_PROVIDER=local
