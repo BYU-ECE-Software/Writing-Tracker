@@ -17,15 +17,18 @@ A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to 
 - npm or yarn
 
 ### Setup
-```bash
+
 # Clone repo
+```bash
 git clone https://github.com/BYU-ECE-Software/Writing-Tracker
 cd Writing-Tracker
-
+```
 # Install dependencies
+```bash
 npm install
-
+```
 # Copy environment file
+```bash
 cp .env.example .env
 ```
 👥 Authors
