@@ -3,31 +3,31 @@
 A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to **gamify writing** and monitor lab members' writing activity.
 
 ---
-## 📑 Documentation
+# 📑 Documentation
 
 - [User Guide](./docs/USER_GUIDE.md)  
 - [Code Documentation](./docs/CODE_DOCS.md)  
 - [Developer Documentation](./docs/DEV_DOCS.md)  
 ---
 
-## 🚀 Quick Start
+# 🚀 Quick Start
 
-### Requirements
+## Requirements
 - Node.js vXX
 - npm or yarn
 
-### Setup
+## Setup
 
-# Clone repo
+### 1.Clone repo
 ```bash
 git clone https://github.com/BYU-ECE-Software/Writing-Tracker
 cd Writing-Tracker
 ```
-# Install dependencies
+### 2.Install dependencies
 ```bash
 npm install
 ```
-# Copy environment file
+### 3.Copy environment file
 ```bash
 cp .env.example .env
 ```
