@@ -43,7 +43,7 @@ Create .env in the project root and configure as needed:
 ---
 
 ### Example Environment File
-
+```
  ================================
  🌍 Environment Configuration
  ================================
@@ -62,5 +62,6 @@ Create .env in the project root and configure as needed:
  ================================
 
  Uncomment and configure if needed
- VITE_AUTH_SECRET=your-secret-key
- VITE_AUTH_PROVIDER=local
+ #VITE_AUTH_SECRET=your-secret-key
+ #VITE_AUTH_PROVIDER=local
+```
