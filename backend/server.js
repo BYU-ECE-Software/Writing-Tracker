@@ -93,20 +93,39 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-const authenticate = async (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { _id: decoded.userId };
-    next();
-  } catch (error) {
-    res.status(401).json({ error: 'Invalid token' });
+function ensureAuth(req, res, next) {
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return next();
   }
-};
+  return res.redirect("/login"); // send user to login page
+}
+
+// SAML login route (redirects user to IdP)
+app.get(
+  "/login",
+  passport.authenticate("saml", { failureRedirect: "/", failureMessage: true })
+);
+
+// SAML callback route (IdP posts here)
+app.post(
+  "/login/callback",
+  passport.authenticate("saml", { failureRedirect: "/", failureMessage: true }),
+  (req, res) => {
+    // Successful login
+    res.redirect("/dashboard"); // Or wherever you want
+  }
+);
+
+// SAML logout (SP-initiated)
+app.get("/logout", (req, res) => {
+  req.logout(() => {
+    res.redirect("/");
+  });
+});
 
 
-app.get('/api/leaderboard', authenticate, async (req, res) => {
+
+app.get('/api/leaderboard', ensureAuth, async (req, res) => {
   const { period } = req.query;
   const startDate = new Date();
   if (period === 'week') startDate.setDate(startDate.getDate() - 7);
