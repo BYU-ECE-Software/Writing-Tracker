@@ -1,41 +1,93 @@
-require('dotenv').config();
+import dotenv from "dotenv"; dotenv.config();
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import passport from "passport";
+import { Strategy as SamlStrategy } from "@node-saml/passport-saml";
+import axios from "axios";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
+import { setupSessions } from "./utils/sessions.js";
 
-const express = require('express');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const cors = require('cors');
+import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import logRoutes from "./routes/logRoutes.js";
+import Log from "./models/Log.js";
 
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const logRoutes = require('./routes/logRoutes');
-const Log = require('./models/Log');
 
-// const allowedOrigins = ['http://localhost:3000', 'http://localhost'];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+];
+;
 
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   credentials: true, // if you want to send cookies or Authorization headers
-// };
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const CERT_DIR = process.env.CERT_DIR || path.join(__dirname, "certs");
+
+console.log("Using certificate directory:", CERT_DIR);
 
 const app = express();
+await setupSessions(app);
 
-// ONLY needed for development when frontend talks directly to API
-if (process.env.NODE_ENV !== 'production') {
-  app.use(cors({
-    origin: ['http://localhost', 'http://localhost:5173'],
-    credentials: true
-  }));
-}
-
-// app.use(cors(corsOptions));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors({ origin: allowedOrigins, credentials: true }));
+
+
+//Build URL variables bc we are good devs
+const BASE_URL = process.env.BASE_URL || "https://ecetracks.byu.edu";
+const CALLBACK_PATH = process.env.CALLBACK_PATH || "/api/auth/login/callback";
+const LOGOUT_CALLBACK_PATH = process.env.LOGOUT_CALLBACK_PATH || "/api/auth/logout/callback";
+
+//Read certs and keys in as vars bc we are still good devs
+
+// Load certs/keys securely from env
+const idpCert = fs.readFileSync(process.env.SAML_IDP_CERT, "utf8");
+const spKey = fs.readFileSync(process.env.SAML_SP_KEY, "utf8");
+const spCert = fs.existsSync(path.join(CERT_DIR, "SAML_sign_leaf.crt"))
+  ? fs.readFileSync(path.join(CERT_DIR, "SAML_sign_leaf.crt"), "utf8") // optional but useful for metadata
+  : null;
+
+const samlStrategy = new SamlStrategy(
+  {
+    entryPoint: process.env.SAML_ENTRY_POINT,        // IdP login URL
+    issuer: process.env.SAML_ISSUER,                 // Your SP entity ID
+    callbackUrl: process.env.SAML_CALLBACK_URL,      // Where IdP posts back to
+    cert: idpCert,                                   // IdP cert (validate assertions)
+    privateKey: spKey,                               // Your SP private key (signing/decryption)
+
+    logoutUrl: process.env.SAML_LOGOUT_URL,          // IdP logout endpoint
+    logoutCallbackUrl: process.env.SAML_LOGOUT_CALLBACK_URL, // Your logout callback
+
+    // 🔒 Security preferences
+    signatureAlgorithm: "sha256",
+    digestAlgorithm: "sha256",
+    wantAssertionsSigned: true,          // Usually required
+    wantAuthnResponseSigned: true,       // Safer than false (verify full response)
+    validateInResponseTo: "always",      // Prevent replay attacks
+    disableRequestedAuthnContext: false,
+    identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+    authnContext: [
+      "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport",
+    ],
+  },
+  (profile, done) => {
+    // User info from IdP
+    return done(null, {
+      id: profile.nameID,
+      nameIDFormat: profile.nameIDFormat,
+      attributes: profile, // full SAML attributes
+    });
+  }
+);
+
+passport.use(samlStrategy);
+
+// Serialize user to session
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
@@ -46,7 +98,7 @@ const authenticate = async (req, res, next) => {
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { _id: decoded.userId }; 
+    req.user = { _id: decoded.userId };
     next();
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' });
@@ -62,30 +114,30 @@ app.get('/api/leaderboard', authenticate, async (req, res) => {
   else startDate.setFullYear(startDate.getFullYear() - 1);
 
   const leaderboard = await Log.aggregate([
-  { $match: { date: { $gte: startDate } } }, // <-- Fix here
-  {
-    $group: {
-      _id: '$userId',
-      totalHours: { $sum: '$hours' },
+    { $match: { date: { $gte: startDate } } }, // <-- Fix here
+    {
+      $group: {
+        _id: '$userId',
+        totalHours: { $sum: '$hours' },
+      },
     },
-  },
-  {
-    $lookup: {
-      from: 'users',
-      localField: '_id',
-      foreignField: '_id',
-      as: 'user',
+    {
+      $lookup: {
+        from: 'users',
+        localField: '_id',
+        foreignField: '_id',
+        as: 'user',
+      },
     },
-  },
-  { $unwind: '$user' },
-  {
-    $project: {
-      username: '$user.username',
-      totalHours: 1,
+    { $unwind: '$user' },
+    {
+      $project: {
+        username: '$user.username',
+        totalHours: 1,
+      },
     },
-  },
-  { $sort: { totalHours: -1 } },
-]);
+    { $sort: { totalHours: -1 } },
+  ]);
 
   res.json(leaderboard);
 });
@@ -94,7 +146,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/logs", logRoutes);
 
-const PORT = process.env.PORT ;
-const IP = process.env.IP ;
-
+const PORT = process.env.PORT;
+const IP = process.env.IP;
 app.listen(PORT, IP, () => console.log(`Server running on ${IP}:${PORT}`));
