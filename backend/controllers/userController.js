@@ -1,12 +1,12 @@
-const User = require("../models/User");
+import User from "../models/User.js";
+import Log from "../models/Log.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
-const Log = require("../models/Log");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
 dotenv.config();
 
-exports.registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
     const { name, netId, username, lab, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -25,7 +25,7 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-exports.updateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
   try {
     const { name, netId, username, lab, email, password } = req.body;
     const userId = req.user._id; // Assuming you have middleware to set req.user
@@ -47,7 +47,7 @@ exports.updateUserProfile = async (req, res) => {
   }
 };
 
-exports.getUserProfile = async (req, res) => {
+export const getUserProfile = async (req, res) => {
   try {
     const userId = req.user._id;
 
@@ -71,7 +71,7 @@ exports.getUserProfile = async (req, res) => {
   }
 };
 
-exports.deleteUserProfile = async (req, res) => {
+export const deleteUserProfile = async (req, res) => {
   try {
     const userId = req.user._id;
 

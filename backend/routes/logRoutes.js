@@ -1,11 +1,10 @@
-const express = require("express");
-const jwt = require("jsonwebtoken");
-
-const {
+import express from "express";
+import jwt from "jsonwebtoken";
+import {  
   createLog,
   getUserLog,
   getAllLogs,
-} = require("../controllers/logController");
+} from "../controllers/logController.js";
 
 const router = express.Router();
 
@@ -34,4 +33,4 @@ router.post("/log", authenticate, createLog);
 // (optional) GET /api/logs/all — fetch all logs (admin use)
 router.get("/all", authenticate, getAllLogs);
 
-module.exports = router;
+export default router;

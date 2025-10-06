@@ -1,4 +1,4 @@
-const Log = require("../models/Log");
+import Log  from "../models/Log.js";
 
 const authenticate = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
@@ -12,7 +12,7 @@ const authenticate = async (req, res, next) => {
   }
 };
 
-exports.createLog = async (req, res) => {
+export const createLog = async (req, res) => {
   try {
     const { date, hours, lab, description } = req.body;
     const userId = req.user._id;
@@ -34,7 +34,7 @@ exports.createLog = async (req, res) => {
   }
 };
 
-exports.getUserLog = async (req, res) => {
+export const getUserLog = async (req, res) => {
   try {
     const logs = await Log.find({ userId: req.user._id }).sort({ date: -1 });
     res.json(logs);
@@ -43,7 +43,7 @@ exports.getUserLog = async (req, res) => {
   }
 };
 
-exports.getAllLogs = async (req, res) => {
+export const getAllLogs = async (req, res) => {
   try {
     const logs = await Log.find().sort({ date: -1 });
     res.json(logs);

@@ -1,7 +1,6 @@
-const User = require('../models/User')
-const express = require("express");
-const { registerUser, updateUserProfile, getUserProfile , deleteUserProfile } = require("../controllers/userController");
-const authenticate = require("../middleware/authenticate"); // Create this if you haven't yet
+import express from "express";
+import { registerUser, updateUserProfile, getUserProfile, deleteUserProfile } from "../controllers/userController.js";
+import authenticate from "../middleware/authenticate.js"; // Create this if you haven't yet
 
 const router = express.Router();
 
@@ -10,4 +9,4 @@ router.get("/profile", authenticate, getUserProfile);
 router.put("/profile", authenticate, updateUserProfile);
 router.delete("/profile",authenticate, deleteUserProfile);
 
-module.exports = router;
+export default router;
