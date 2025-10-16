@@ -1,15 +1,24 @@
+
 <template>
     <header class="header-bar w-full text-white py-4 px-6 shadow-md">
         <div class="max-w-7xl mx-auto flex items-center">
             <a href="https://www.byu.edu" target="_blank" rel="noopener noreferrer" class="mr-4">
                 <img src="@/assets/BYU_monogram_white.svg" alt="Logo" class="h-10 w-auto">
             </a>
-            <h1 class="text-2xl font-bold">| ECE Secretary Organizational Superpowers</h1>
+            <h1 class="text-2xl font-bold">| ECE Writing Tracker</h1>
         </div>
     </header>
 </template>
 
 <script>
+import { useAuth } from '../composable/useAuth'; // Import the function, not individual values
+const { isAuthenticated, logout } = useAuth(); // Destructure inside setup
+
+// For debugging (optional)
+import { watch } from 'vue';
+watch(isAuthenticated, (newVal) => {
+  console.log("isAuthenticated changed:", newVal);
+});
 export default {
     name: "HeaderBar",
 };

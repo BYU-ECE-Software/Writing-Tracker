@@ -1,19 +1,20 @@
-const User = require("../models/User");
+import User from "../models/User.js";
+import Log from "../models/Log.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
-const Log = require("../models/Log");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
 dotenv.config();
 
-exports.registerUser = async (req, res) => {
+export const registerUser = async (req, res) => {
   try {
-    const { name, username, email, password } = req.body;
+    const { name, netId, username, lab, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ name, username, email, password: hashedPassword });
-    await user.save();
-    res.status(201).json({ message: "User registered" });
+    const user = new User({ name, netId, username, lab, email, password: hashedPassword });
+    const newUser = await user.save();
+    res.status(201).json({ message: "User registered", newUser });
   } catch (error) {
+    console.error("Registration error:", error);
     if (error.code === 11000) {
       // Duplicate key error
       return res
@@ -24,14 +25,14 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-exports.updateUserProfile = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
   try {
-    const { name, username, netID, lab, email, password } = req.body;
+    const { name, netId, username, lab, email, password } = req.body;
     const userId = req.user._id; // Assuming you have middleware to set req.user
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { name, username, email, password, netID, lab },
+      { name, username, email, password, netId, lab },
       { new: true }
     );
 
@@ -41,6 +42,53 @@ exports.updateUserProfile = async (req, res) => {
 
     res.status(200).json({ message: "Profile updated successfully" });
   } catch (error) {
+    console.error("Registration error:", error);
     res.status(500).json({ error: "Server error during profile update" });
   }
 };
+
+export const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const userProfile = await User.findById(userId, {
+      name: 1,
+      netId: 1,
+      username: 1,
+      lab: 1,
+      email: 1,
+      badges: 1, // assuming badges is part of the schema
+    });
+
+    if (!userProfile) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(userProfile);
+  } catch (error) {
+    console.error("Profile fetch error:", error);
+    res.status(500).json({ error: "Server error during profile fetch" });
+  }
+};
+
+export const deleteUserProfile = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Optional: delete user logs first if needed
+    await Log.deleteMany({ userId });
+
+    // Delete the user
+    const deletedUser = await User.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'User profile deleted successfully' });
+  } catch (error) {
+    console.error("Profile delete error:", error);
+    res.status(500).json({ error: 'Failed to delete user profile' });
+  }
+};
+

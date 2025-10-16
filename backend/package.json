@@ -1,22 +1,32 @@
 {
     "name": "backend",
     "version": "1.0.0",
+    "type": "module",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon server.js"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "description": "",
     "dependencies": {
+        "@node-saml/passport-saml": "^5.1.0",
+        "axios": "^1.12.2",
         "bcryptjs": "^2.4.3",
         "cors": "^2.8.5",
         "dotenv": "^16.4.7",
         "express": "^4.21.2",
+        "express-session": "^1.17.3",
         "jsonwebtoken": "^9.0.0",
         "mongodb": "^6.16.0",
-        "mongoose": "^8.10.0"
+        "mongoose": "^8.10.0",
+        "passport": "^0.7.0",
+        "passport-saml": "^3.2.0"
     },
-    "packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f"
+    "packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f",
+    "devDependencies": {
+        "nodemon": "^3.1.10"
+    }
 }

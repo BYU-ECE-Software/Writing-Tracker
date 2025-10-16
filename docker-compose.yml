@@ -1,7 +1,7 @@
 services:
   frontend:
     image: nginx:latest
-    container_name: tracks_frontend
+    container_name: writing_app_frontend
     restart: always
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
@@ -15,12 +15,12 @@ services:
 
   api:
     build: ./backend
-    container_name: tracks_api
+    container_name: writing_app_api
     restart: always
     environment:
       - NODE_ENV=production
     env_file:
-      - ./backend/.env.production
+      - ./backend/.env
     depends_on:
       - mongo
     ports:
@@ -30,12 +30,12 @@ services:
 
   mongo:
     image: mongo:6
-    container_name: tracks_db
+    container_name: writing_app_db
     restart: always
     volumes:
       - mongo_data:/data/db
     environment:
-      - MONGO_INITDB_DATABASE=tracks
+      - MONGO_INITDB_DATABASE=writing_app
     networks:
       - app_network
 

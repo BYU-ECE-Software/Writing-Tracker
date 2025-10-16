@@ -1,91 +1,39 @@
+# 📚 BYU ECE Writing Tracker
 
-# BYU ECE Writing Tracker
+A habit-tracking web app commissioned by Cammy and James from the MAGICC Lab to **gamify writing** and monitor lab members' writing activity.
 
-Habit tracking software, commissioned by Cammy and James from the MAGICC Lab in an effort to gamify writing and to keep track of who in the lab has been writing the most.
+---
+# 📑 Documentation
 
+ 1. [User Guide](./docs/USER_GUIDE.md)  
+ 2. [Code Documentation](./docs/CODE_DOCS.md)  
+ 3. [Developer Documentation](./docs/DEV_DOCS.md)  
+---
 
-## Tech Stack
+# 🚀 Quick Start
 
-**Frontend:** Vue 3, PrimeVue 4, TailwindCSS
+## Requirements
+- Node.js v20 or higher
+- npm or yarn
+---
+## Setup
 
-**Backend:** Node, Express, PNPM
-
-
-## Run Locally
-
-Clone the project
-
+### 1. Clone repository
 ```bash
-  git clone https://github.com/BYU-ECE-Software/Writing-Tracker
+git clone https://github.com/BYU-ECE-Software/Writing-Tracker
+cd Writing-Tracker
 ```
-
-Open 2 terminals
-
-Go to the frontend directory on one terminal
-
+### 2. Install dependencies
 ```bash
-  cd Writing-Tracker/frontend
+npm install
 ```
-
-Install dependencies
-
+### 3. Copy environment file
 ```bash
-  (p)npm install
+cp .env.example .env
 ```
+---
+👥 Authors
 
-Start the frontend
-
-```bash
-  (p)npm run dev
-```
-
-On the other terminal, go to the backend directory
-
-```bash
-  cd Writing-Tracker/backend
-```
-
-Install dependencies
-
-```bash
-  (p)npm install
-```
-
-Start the backend
-
-```bash
-  node server.js
-```
-
-You now should be able to browse to the given frontend URL and port to see the web app
-## Roadmap
-
-- Actually make this work
-
-- Include badges for student's profiles
-
-
-## Authors
-
-- [@romanvish](https://www.github.com/romanvish)
-
-
-## Contributing
-
-Contributions are always welcome!
-
-Please fork and create a pull request if there are things that others can benefit from.
-
-Please always follow BYU branding guides.
-
-
-## FAQ
-
-#### Does this work?
-
-No not yet
-
-#### Will it work soon?
-
-I hope so
+    @romanvish
+    @michaelkane
 

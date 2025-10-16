@@ -1,15 +1,22 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import router from './router/router.js';
-
+import router from "./router/router"
+ 
 import PrimeVue from 'primevue/config';
-import 'primeicons/primeicons.css';
-import { ToastService } from 'primevue';
-
-import './assets/main.css'; // global css
-
+import 'primeicons/primeicons.css'; // Icons
+import Lara from '@primevue/themes/lara';
+ 
+import './assets/main.css'
+ 
 const app = createApp(App);
-app.use(PrimeVue);
-app.use(router);
-app.use(ToastService);
+ 
+app.use(router)
+app.use(PrimeVue, {
+    theme:{
+        preset: Lara,
+        options: {
+            darkModeSelector: '.app-dark'
+        }
+    }
+});
 app.mount('#app');

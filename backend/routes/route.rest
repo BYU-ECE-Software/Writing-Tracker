@@ -1,0 +1,78 @@
+GET http://localhost:5000/api/leaderboard
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlkN2I2YWViM2QxOTc0NTY3M2MiLCJpYXQiOjE3NTI4NTQ2MjgsImV4cCI6MTc1Mjg1ODIyOH0.tuBVjSxTtTknlrrzF9mhUvBi9Oz-bD7mYt4E0GivyoI
+Content-Type: application/json
+
+
+###
+
+#register user API
+POST  http://localhost:5000/api/users/register
+Content-Type: application/json
+
+{
+  "name": "Test11",
+  "netId": "netBYU11",
+  "username": "devUser11",
+  "lab": "Doctor Evil Lab",
+  "email": "test11@byu.test",
+  "password": "12345678"
+}
+
+
+###
+#user Login API
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "test7@byu.test",
+  "password": "12345678"
+}
+
+###
+#update user profile API
+PUT http://localhost:3000/api/users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlmNmI2YWViM2QxOTc0NTY3NDAiLCJpYXQiOjE3NTU1NTQ1OTIsImV4cCI6MTc1NTU1ODE5Mn0.ek3QR57Jui_2APeDj8j6OSe610kKazMAcmu1aFbl2e4
+Content-Type: application/json
+
+
+{
+  "name": "Test1",
+  "netId": "netBYU",
+  "username": "devUser1",
+  "lab": "Doctor Evil Lab",
+  "email": "test1@byu.test",
+  "password": "12345678"
+}
+
+
+###
+#get user profiles API
+GET http://localhost:3000/api/users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlmNmI2YWViM2QxOTc0NTY3NDAiLCJpYXQiOjE3NTU1NTQ1OTIsImV4cCI6MTc1NTU1ODE5Mn0.ek3QR57Jui_2APeDj8j6OSe610kKazMAcmu1aFbl2e4
+Content-Type: application/json
+
+
+###
+#Log user logs
+POST http://localhost:3000/api/logs/log
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlmNmI2YWViM2QxOTc0NTY3NDAiLCJpYXQiOjE3NTU1NTQ1OTIsImV4cCI6MTc1NTU1ODE5Mn0.ek3QR57Jui_2APeDj8j6OSe610kKazMAcmu1aFbl2e4
+Content-Type: application/json
+
+{
+  "date": "2025-08-18",
+  "hours": 4.5,
+  "lab": "Test 4",
+  "description": "Docker"
+}
+
+###
+#Log user logs
+GET  http://localhost:5000/api/logs/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1MzlmNmI2YWViM2QxOTc0NTY3NDAiLCJpYXQiOjE3NTUwOTk5MDcsImV4cCI6MTc1NTEwMzUwN30.NLWvropMMoOgwEKeMwxHzkFNIBjwS6zD-81ODG0kqWg
+Content-Type: application/json
+###
+#Delete user profiles API
+DELETE  http://localhost:5000/api/users/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODc1M2JmN2I2YWViM2QxOTc0NTY3NWYiLCJpYXQiOjE3NTI1MTM3MDQsImV4cCI6MTc1MjUyODEwNH0._S5xa7TYPF1Uf3IG0IxD8vBO6cyGOwu1_t4GwSlszl0
+Content-Type: application/json

@@ -1,6 +1,5 @@
 <template>
   <div class="flex justify-center items-center min-h-screen bg-gray-100 px-4">
-    <Toast />
     <Card class="w-full max-w-md shadow-lg rounded-2xl">
       <template #title>
         <div class="text-center text-2xl font-semibold text-gray-800">Login</div>
@@ -55,13 +54,11 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useToast } from 'primevue/usetoast';
+import { useRouter } from 'vue-router';;
 
 import Card from 'primevue/card';
 import Inputtext from 'primevue/inputtext';
 import Button from 'primevue/button';
-import Toast from 'primevue/toast';
 
 import axios from 'axios';
 
@@ -69,7 +66,6 @@ const email = ref('');
 const password = ref('');
 const loading = ref(false);
 const router = useRouter();
-const toast = useToast();
 
 
 const login = async () => {
@@ -81,10 +77,10 @@ const login = async () => {
     });
 
     localStorage.setItem('token', response.data.token);
-    toast.add({ severity: 'success', summary: 'Login Successful', life: 3000 });
-    router.push('/profile');
+    console.log({ severity: 'success', summary: 'Login Successful', life: 3000 });
+    router.push('/leaderboard');
   } catch (error) {
-    toast.add({
+    console.log({
       severity: 'error',
       summary: 'Login Failed',
       detail: error.response?.data?.message || 'Please check your credentials.',

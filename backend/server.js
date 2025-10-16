@@ -1,33 +1,37 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
-const cors = require('cors');
-const dotenv = require('dotenv');
+import dotenv from "dotenv"; dotenv.config();
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import authRoutes from "./routes/authRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import logRoutes from "./routes/logRoutes.js";
+import Log from "./models/Log.js";
 
-const authRoutes = require('./routes/authRoutes');
-const userRoutes = require('./routes/userRoutes');
-const logRoutes = require('./routes/logRoutes');
-
-const allowedOrigins = ['http://localhost:3000',];// 'https://your-frontend-domain.com'];
-
-dotenv.config();
 const app = express();
-app.use(cors());
+
+// ONLY needed for development when frontend talks directly to API
+if (process.env.NODE_ENV !== 'production') {
+  app.use(cors({
+    origin: ['http://localhost', 'http://localhost:5173'],
+    credentials: true
+  }));
+}
+
+// app.use(cors(corsOptions));
 app.use(express.json());
-app.use(cors({ origin: allowedOrigins }));
 
-mongoose.connect(process.env.MONGO_URI, {
-  }).then(() => console.log("MongoDB Connected"))
-    .catch(err => console.log(err));
-
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
 
 const authenticate = async (req, res, next) => {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'Unauthorized' });
   try {
-    const decoded = jwt.verify(token, 'secret');
-    req.userId = decoded.userId;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = { _id: decoded.userId }; 
     next();
   } catch (error) {
     res.status(401).json({ error: 'Invalid token' });
@@ -43,39 +47,38 @@ app.get('/api/leaderboard', authenticate, async (req, res) => {
   else startDate.setFullYear(startDate.getFullYear() - 1);
 
   const leaderboard = await Log.aggregate([
-    { $match: { date: { $gte: startDate.toISOString().split('T')[0] } } },
-    {
-      $group: {
-        _id: '$userId',
-        totalHours: { $sum: '$hours' },
-      },
+  { $match: { date: { $gte: startDate } } }, // <-- Fix here
+  {
+    $group: {
+      _id: '$userId',
+      totalHours: { $sum: '$hours' },
     },
-    {
-      $lookup: {
-        from: 'users',
-        localField: '_id',
-        foreignField: '_id',
-        as: 'user',
-      },
+  },
+  {
+    $lookup: {
+      from: 'users',
+      localField: '_id',
+      foreignField: '_id',
+      as: 'user',
     },
-    { $unwind: '$user' },
-    {
-      $project: {
-        username: '$user.username',
-        totalHours: 1,
-      },
+  },
+  { $unwind: '$user' },
+  {
+    $project: {
+      username: '$user.username',
+      totalHours: 1,
     },
-    { $sort: { totalHours: -1 } },
-  ]);
+  },
+  { $sort: { totalHours: -1 } },
+]);
 
   res.json(leaderboard);
 });
-
-const PORT = process.env.PORT;
-const IP = process.env.IP;
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/logs", logRoutes);
 
-app.listen(PORT, IP, () => console.log(`Server running on port ${PORT}`));
+const PORT = process.env.PORT ;
+const IP = process.env.IP ;
+app.listen(PORT, IP, () => console.log(`Server running on ${IP}:${PORT}`));

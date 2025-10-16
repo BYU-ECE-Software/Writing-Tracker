@@ -1,33 +1,53 @@
-const Log = require("../models/Log");
+import Log  from "../models/Log.js";
 
 const authenticate = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.status(401).json({ error: "Unauthorized" });
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
   try {
-    const decoded = jwt.verify(token, "secret");
-    req.userId = decoded.userId;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = { _id: decoded.userId };  //  You must have this line
     next();
   } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
+    res.status(401).json({ error: 'Invalid token' });
   }
 };
 
-(exports.createLog = authenticate),
-  async (req, res) => {
-    const { hours, date } = req.body;
-    const log = new Log({ userId: req.userId, hours, date });
+export const createLog = async (req, res) => {
+  try {
+    const { date, hours, lab, description } = req.body;
+    const userId = req.user._id;
+
+    const log = new Log({
+      userId,
+      date: new Date(date),
+      hours,
+      lab,
+      description,
+    });
+
     await log.save();
-    res.status(201).json({ message: "Log logged" });
-  };
 
-(exports.getUserLog = authenticate),
-  async (req, res) => {
-    const logs = await Log.find({ userId: req.userId }).sort({ date: -1 });
+    res.status(201).json({ message: "Log entry created", log });
+  } catch (error) {
+    console.error("Log creation error:", error);
+    res.status(500).json({ error: "Failed to create log entry" });
+  }
+};
+
+export const getUserLog = async (req, res) => {
+  try {
+    const logs = await Log.find({ userId: req.user._id }).sort({ date: -1 });
     res.json(logs);
-  };
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch logs' });
+  }
+};
 
-(exports.getAllLogs = authenticate),
-  async (req, res) => {
+export const getAllLogs = async (req, res) => {
+  try {
     const logs = await Log.find().sort({ date: -1 });
     res.json(logs);
-  };
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch all logs' });
+  }
+};
